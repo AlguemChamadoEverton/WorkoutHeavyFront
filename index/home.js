@@ -263,7 +263,6 @@ if(1 === 1){
         let actualLog = button.parentElement.parentElement.parentElement.parentElement;
         for(let o=0; o < workoutLogs.length ; o++){
             if(actualLog.isEqualNode(workoutLogs[o])){
-                console.log('aqui foi em');
                 button.allComments = data.workouts[o].commentaries;
             }
         }

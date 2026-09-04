@@ -1,5 +1,5 @@
 import Cookies from "https://esm.sh/universal-cookie";
-const emailRegex = /^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gim;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 let incorrect = document.getElementById("incorrect");
 
 export default async function loginFetch() {
@@ -14,15 +14,15 @@ export default async function loginFetch() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "Email": email_input.value,
-                "PasswordHash": pass_input.value.toLowerCase()
+                "Email": email_input.value.toLowerCase(),
+                "PasswordHash": pass_input.value
             })
         })
         if (response.ok){
             const data = await response.json();
             const key = data.toString();
             cookies.set("jwt_authorization", key, { path: '/' });
-            window.location = "http://localhost:63342/MeuPrimeiroFront/index/home.html?_ijt=53be0nru7hq3p8md6ic6vqghan&_ij_reload=RELOAD_ON_CHANGE";
+            window.location = "http://localhost:63342/MeuPrimeiroFront/index/home.html?_ijt=b2kjubtonhrcc3muft730iq41m&_ij_reload=RELOAD_ON_CHANGE";
         } else if(response.status === 400){
             console.log(await response.json())
         }

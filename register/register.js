@@ -6,7 +6,7 @@ let pass = document.getElementById("pass_input");
 let user = document.getElementById("user_input");
 export default async function registerFetch() {
     const url = "http://localhost:5255/";
-    const emailRegex = /^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gim;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
     const userRegex = /^[0-9A-Za-z]{6,16}$/;
     let emailIsValid = emailRegex.test(email.value.toLowerCase());
     let passIsValid = (pass.value.length > 5 && pass.value.length < 21);
@@ -19,9 +19,9 @@ export default async function registerFetch() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "Username": user,
-                "Email": email,
-                "PasswordHash": pass
+                "Username": user.value,
+                "Email": email.value,
+                "PasswordHash": pass.value
             })
         })
         if (response.ok) {
