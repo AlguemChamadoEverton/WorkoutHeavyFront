@@ -6,9 +6,9 @@ let pass = document.getElementById("pass_input");
 let user = document.getElementById("user_input");
 export default async function registerFetch() {
     const url = "http://localhost:5255/";
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const userRegex = /^[0-9A-Za-z]{6,16}$/;
-    let emailIsValid = emailRegex.test(email.value.toLowerCase());
+    let emailIsValid = emailRegex.test(email.value.toLowerCase().trim());
     let passIsValid = (pass.value.length > 5 && pass.value.length < 21);
     let userIsValid = userRegex.test(user.value);
 

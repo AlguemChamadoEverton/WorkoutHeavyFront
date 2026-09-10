@@ -4,6 +4,11 @@ let response;
 const url = "http://localhost:5255/";
 let cookies = new Cookies();
 const token = cookies.get('jwt_authorization');
+window.addEventListener("pageshow", (event) => {
+        if(!token){
+            window.location.replace("http://localhost:63342/MeuPrimeiroFront/login/login.html");
+        }
+});
 
 /*const response = await fetch(`${url}workouts`, {
     method: "GET",
@@ -371,3 +376,7 @@ export function closeOverlay(){
     document.body.querySelector('.overlay').remove();
     document.body.style.overflowY = "scroll";
 }
+document.getElementById("exit").addEventListener("click", () => {
+    cookies.remove('jwt_authorization', {path: '/'});
+    window.location = "http://localhost:63342/MeuPrimeiroFront/login/login.html";
+});

@@ -1,11 +1,19 @@
 import Cookies from "https://esm.sh/universal-cookie";
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 let incorrect = document.getElementById("incorrect");
+const loginButton = document.getElementById("login_button");
+let email_input = document.getElementById("email_input");
+let pass_input = document.getElementById("pass_input");
+const cookies = new Cookies();
+window.addEventListener("pageshow", (event) => {
 
+        if(cookies.get("jwt_authorization")){
+            window.location.replace("http://localhost:63342/MeuPrimeiroFront/index/home.html")
+        }
+});
 export default async function loginFetch() {
-    const cookies = new Cookies();
     const url = "http://localhost:5255/";
-    let emailIsValid = emailRegex.test(email_input.value.toLowerCase());
+    let emailIsValid = emailRegex.test(email_input.value.toLowerCase().trim());
     let passIsValid = (pass_input.value.length > 5 && pass_input.value.length < 21);
     if (emailIsValid && passIsValid) {
         const response = await fetch(`${url}login`, {
@@ -22,9 +30,9 @@ export default async function loginFetch() {
             const data = await response.json();
             const key = data.toString();
             cookies.set("jwt_authorization", key, { path: '/' });
-            window.location = "http://localhost:63342/MeuPrimeiroFront/index/home.html?_ijt=b2kjubtonhrcc3muft730iq41m&_ij_reload=RELOAD_ON_CHANGE";
+            window.location = "http://localhost:63342/MeuPrimeiroFront/index/home.html";
         } else if(response.status === 400){
-            console.log(await response.json())
+            incorrect.removeAttribute("hidden");
         }
             else {
             console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
@@ -46,6 +54,7 @@ function registerButtonMouseOut(){
 }
 
 function button_change() {
+    incorrect.hidden = true;
     if(email_input.value.length > 0 && pass_input.value.length > 0){
         loginButton.style.backgroundColor = "#0085f2";
         loginButton.addEventListener("mouseover", registerButtonMouseIn);
@@ -61,10 +70,6 @@ function button_change() {
         loginButton.removeEventListener("click", login);
     }
 }
-
-const loginButton = document.getElementById("login_button");
-let email_input = document.getElementById("email_input");
-let pass_input = document.getElementById("pass_input");
 
 email_input.addEventListener("input", button_change);
 pass_input.addEventListener("input", button_change);
