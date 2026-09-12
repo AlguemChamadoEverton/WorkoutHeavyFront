@@ -238,17 +238,20 @@ if(1 === 1){
         exercises = workout.exercises;
         let exerciseLength = exercises.length;
         let m = exerciseLength < 3 ? exerciseLength : 3;
-        for(let i = 0; i < m; i++){
+        for (let i = 0; i < m; i++) {
             let exercise_template = document.getElementById("exercises").content.cloneNode(true);
             exercise_template.querySelector('.exercise_img').src = exercises[i].image;
             exercise_template.querySelector('.exercise_text').textContent = exercises[i].name;
             workout_template.querySelector('#exercises_summary').appendChild(exercise_template);
         }
-        if(exerciseLength > 3){
+        if (exerciseLength > 3) {
             seeMoreEx = document.getElementById('see_more_ex').content.cloneNode(true);
-            seeMoreEx.querySelector('#exercises_more_ex').textContent = `See ${exerciseLength-3} more exercises`;
+            seeMoreEx.querySelector('#exercises_more_ex').textContent = `See ${exerciseLength - 3} more exercises`;
             workout_template.querySelector('#exercises_summary').appendChild(seeMoreEx);
         }
+        //carregar os comentarios com base no json, mostrar os 2 primeiros comentários apenas se for menor que dois o restante vai para o view more,
+        // o view more tem que ser atualizado em tempo real
+        //o view more e o outro tem que ser simultaneos ou seja uma coisa só
         let commentaries = workout.commentaries;
         let commentariesLength = commentaries.length;
         let n = commentariesLength < 2 ? commentariesLength : 2;
@@ -262,40 +265,40 @@ if(1 === 1){
         document.getElementsByClassName("home")[0].appendChild(workout_template);
     });
     let moreComments = document.getElementsByClassName("link");
-    //02/06 - preciso finalizar essa logica esse for vai ter que se transformar em foreach porque o moreComments não aceita foreach
+    let workoutLogs = document.getElementsByClassName("workout_log");
     for(let button of moreComments){
-        let workoutLogs = document.getElementsByClassName("workout_log");
         let actualLog = button.parentElement.parentElement.parentElement.parentElement;
         for(let o=0; o < workoutLogs.length ; o++){
             if(actualLog.isEqualNode(workoutLogs[o])){
                 button.allComments = data.workouts[o].commentaries;
             }
         }
-        button.addEventListener("click", showCommentOverlay);
+        button.addEventListener("click", (event) => showCommentOverlay(event, data));
     }
     checkCommentInput(data.workouts);
 }
+
 else if(response.status === 404){
     noActivity.style.display = "";
 }
 else{
     noActivity.style.display = "";
 }
-export function checkCommentInput(data){
+export function checkCommentInput(workouts, overlay = false){
     let postButtons = document.getElementsByClassName("post_comment");
     for(let k = 0; k < postButtons.length; k++){
         let inputComment = postButtons[k].parentElement.querySelector('#comentario');
         inputComment.addEventListener("input", (event) => {
-            let inputComment = event.currentTarget.value;
+            let inputComment = event.currentTarget.value; //para cada letra digitada ele ta rodando o event listener e o post roda junto com o click para cada letra
             let postStyle = postButtons[k].style;
             if(inputComment.length > 0) {
                 postStyle.cursor = "pointer";
                 postStyle.color = "blue";
-                postButtons[k].addEventListener("click", postComment)
-
+                postButtons[k].onclick = function(event) {postComment(event, workouts, k, overlay);}
+                //postButtons[k].addEventListener("click", (event) => postComment(event, workouts, k));
             }
             else{
-                postButtons[k].removeEventListener("click", postComment)
+                postButtons[k].onclick = false;
                 postStyle.cursor = "";
                 postStyle.color = "gray";
             }
@@ -303,7 +306,7 @@ export function checkCommentInput(data){
     }
 }
 
-export async function postComment(event){
+export async function postComment(event, workouts, k){
         //preciso criar um fetch para o front e, ao mesmo tempo, adicionar o valor no html para reproduzir sem precisar recarregar a pagina
         //para fazer isso posso criar um objeto diretamente (não sei como faz) ou posso colocar direto no mock(ñão sei como faz)
         //pensei em criar variaveis e usar tanto para fazer o fetch quanto para exbir no html
@@ -323,22 +326,25 @@ export async function postComment(event){
         {
             "image": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg",
             "username": "pl",
-            "commentary": "macaco"
+            "commentary": "${commentary}"
         }`
-        let data = JSON.parse(response);
-        
+        let responseParse = JSON.parse(response);
+
+        //se tiver resposta boa executa (mockado pq não tem o endpoint)
         if(1===1) {
             let comment_template = document.getElementById("tpl_comment").content.cloneNode(true);
 
-            comment_template.querySelector("#comment_profile_pic").src = data.image;
-            comment_template.querySelector("#comment_user").textContent = data.username;
-            comment_template.querySelector("#comment_text").textContent = data.commentary;
-
-            event.currentTarget.parentElement.parentElement.querySelector('#comment').appendChild(comment_template); //usar para adicionar comentário depois
+            workouts[k].commentaries.push({image: responseParse.image, username: responseParse.username, time: "Today at 08:00 PM", commentary: responseParse.commentary});
+            comment_template.querySelector("#comment_profile_pic").src = responseParse.image;
+            comment_template.querySelector("#comment_user").textContent = responseParse.username;
+            comment_template.querySelector("#comment_text").textContent = responseParse.commentary;
+            let commentariesList = event.currentTarget.parentElement.parentElement.querySelector('#comment')
+            updateCommentary(overlay, comment_template, commentariesList);
+            //commentariesList.appendChild(comment_template); //usar para adicionar comentário depois
 
         }
 }
-export function showCommentOverlay(event){
+export function showCommentOverlay(event, data){
     const body = document.body;
     body.style.overflowY = "hidden";
     let moreComments = event.currentTarget;
@@ -348,6 +354,8 @@ export function showCommentOverlay(event){
     workoutDone.querySelector('.link').remove();
     workoutDone.prepend(document.getElementById("close_scroll").content.cloneNode(true));
     let commentList = workoutDone.querySelector('#comment');
+
+    //Eu não precisaria deletar se a lógica estivesse correta e os dois fossem interligados
     while(commentList.firstChild) commentList.removeChild(commentList.firstChild);
     if(allComments.length > 7) commentList.style.overflowY = "scroll";
     commentList.appendChild(showComments(allComments.length, allComments));
@@ -357,7 +365,8 @@ export function showCommentOverlay(event){
     body.prepend(commentOverlay);
     document.getElementById("comment_box_background").addEventListener("click", closeOverlay);
     workoutDone.querySelector("#x_button").addEventListener("click", closeOverlay);
-    checkCommentInput();
+    let overlay = true;
+    checkCommentInput(data.workouts, overlay);
 }
 export function showComments(n, commentaries){
     let commentsList = document.createDocumentFragment();
@@ -375,6 +384,12 @@ export function showComments(n, commentaries){
 export function closeOverlay(){
     document.body.querySelector('.overlay').remove();
     document.body.style.overflowY = "scroll";
+}
+
+export function updateCommentary(overlay){
+    if(overlay === true){
+
+    }
 }
 document.getElementById("exit").addEventListener("click", () => {
     cookies.remove('jwt_authorization', {path: '/'});
