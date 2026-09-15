@@ -386,7 +386,7 @@ export function closeOverlay(){
     document.body.style.overflowY = "scroll";
 }
 
-export function updateCommentary(overlay){
+export function updateCommentary(overlay, comment_template, commentariesList){
     if(overlay === true){
 
     }
