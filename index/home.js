@@ -258,13 +258,14 @@ if(1 === 1){
         commentariesList.appendChild(showComments(n, commentaries));
         
         if(commentariesLength > 2){
-            renderViewAllButton(commentariesList, commentariesLength);
+            renderViewAllButton(commentariesList, commentariesLength, workout);
         }
         document.getElementsByClassName("home")[0].appendChild(workout_template);
+        checkCommentInput(workout);
     });
     let moreComments = document.getElementsByClassName("link");
     let workoutLogs = document.getElementsByClassName("workout_log");
-    for(let button of moreComments){
+    /*for(let button of moreComments){
         let actualLog = button.parentElement.parentElement.parentElement.parentElement;
         for(let o= 0; o < workoutLogs.length; o++){
             if(actualLog.isEqualNode(workoutLogs[o])){
@@ -276,8 +277,7 @@ if(1 === 1){
             let overlay = true;
             checkCommentInput(data.workouts, overlay);
         });
-    }
-    checkCommentInput(data.workouts);
+    }*/
 }
 
 else if(response.status === 404){
@@ -286,7 +286,7 @@ else if(response.status === 404){
 else{
     noActivity.style.display = "";
 }
-export function checkCommentInput(workouts, overlay = false){
+export function checkCommentInput(workout, overlay = false){
     let postButtons = document.getElementsByClassName("post_comment");
     for(let k = 0; k < postButtons.length; k++){
         let inputComment = postButtons[k].parentElement.querySelector('#comentario');
@@ -296,7 +296,7 @@ export function checkCommentInput(workouts, overlay = false){
             if(inputComment.length > 0) {
                 postStyle.cursor = "pointer";
                 postStyle.color = "blue";
-                postButtons[k].onclick = function(event) {postComment(event, workouts, k, overlay);}
+                postButtons[k].onclick = function(event) {postComment(event, workout, overlay);}
                 //postButtons[k].addEventListener("click", (event) => postComment(event, workouts, k));
             }
             else{
@@ -308,7 +308,7 @@ export function checkCommentInput(workouts, overlay = false){
     }
 }
 
-export async function postComment(event, workouts, k, overlay){
+export async function postComment(event, workout, overlay){
         //preciso criar um fetch para o front e, ao mesmo tempo, adicionar o valor no html para reproduzir sem precisar recarregar a pagina
         //para fazer isso posso criar um objeto diretamente (não sei como faz) ou posso colocar direto no mock(ñão sei como faz)
         //pensei em criar variaveis e usar tanto para fazer o fetch quanto para exbir no html
@@ -335,22 +335,22 @@ export async function postComment(event, workouts, k, overlay){
         //se tiver resposta boa executa (mockado pq não tem o endpoint)
         if(1===1) {
             let comment_template = document.getElementById("tpl_comment").content.cloneNode(true);
-            let commentaries = workouts[k].commentaries;
+            let commentaries = workout.commentaries;
             commentaries.push({image: responseParse.image, username: responseParse.username, time: "Today at 08:00 PM", commentary: responseParse.commentary});
             comment_template.querySelector("#comment_profile_pic").src = responseParse.image;
             comment_template.querySelector("#comment_user").textContent = responseParse.username;
             comment_template.querySelector("#comment_text").textContent = responseParse.commentary;
             let commentariesList = event.currentTarget.parentElement.parentElement.querySelector('#comment');
-            updateCommentary(overlay, comment_template, commentariesList, commentaries.length);
+            updateCommentary(overlay, comment_template, commentariesList, commentaries.length, workout);
             //commentariesList.appendChild(comment_template); //usar para adicionar comentário depois
 
         }
 }
-export function showCommentOverlay(event){
+export function renderCommentOverlay(event, workout){
     const body = document.body;
     body.style.overflowY = "hidden";
     let moreComments = event.currentTarget;
-    let allComments = moreComments.allComments;
+    let allComments = workout.commentaries;
     let workoutDone = moreComments.parentElement.parentElement.parentElement.cloneNode(true);
     workoutDone.querySelector('#exercises_summary').remove();
     workoutDone.querySelector('.link').remove();
@@ -367,6 +367,8 @@ export function showCommentOverlay(event){
     body.prepend(commentOverlay);
     document.getElementById("comment_box_background").addEventListener("click", closeOverlay);
     workoutDone.querySelector("#x_button").addEventListener("click", closeOverlay);
+    let overlay = true;
+    checkCommentInput(workout, overlay);
 }
 export function showComments(n, commentaries){
     let commentsList = document.createDocumentFragment();
@@ -386,21 +388,18 @@ export function closeOverlay(){
     document.body.style.overflowY = "scroll";
 }
 
-export function updateCommentary(overlay, comment_template, commentariesList, commentariesLength){
+export function updateCommentary(overlay, comment_template, commentariesList, commentariesLength, workout){
     if(overlay === true) commentariesList.appendChild(comment_template);
     else if(commentariesList.childElementCount < 2) commentariesList.appendChild(comment_template);
-    else renderViewAllButton(commentariesList, commentariesLength);
+    else renderViewAllButton(commentariesList, commentariesLength, workout);
 }
-export function renderViewAllButton(commentariesElementList, commentariesLength, data){
+export function renderViewAllButton(commentariesElementList, commentariesLength, workout){
     if (commentariesElementList.querySelector('#exercises_more') === null){
         let seeMore = document.getElementById('see_more').content.cloneNode(true);
         seeMore.querySelector('#exercises_more').textContent = `View all ${commentariesLength} comments`;
         commentariesElementList.appendChild(seeMore);
-        //parei aqui, chamei o overlay para a segunda redenrização e percebi como poderia ter sido mais simples em uma coisa só
-        commentariesElementList.querySelector('#exercises_more').onclick = function (event) {
-            showCommentOverlay(event);
-            let overlay = true;
-            checkCommentInput(data.workouts, overlay)
+        commentariesElementList.querySelector('.link').onclick = function (event) {
+            renderCommentOverlay(event, workout);
         };
     }
     else {
