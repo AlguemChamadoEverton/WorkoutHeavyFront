@@ -32,7 +32,6 @@
     justify-content: center;
     border-radius: 10px;
     width: 690px;
-    min-height: 530px;
     background-color: #161618;
 }
 .profile{
@@ -142,7 +141,6 @@
     background-color: #191a1c;
     width:570px;
     max-width: 570px;
-    min-height:400px;
     max-height: 900px;
     z-index: 1001;
     border-radius: 20px;

@@ -5,9 +5,9 @@ const url = "http://localhost:5255/";
 let cookies = new Cookies();
 const token = cookies.get('jwt_authorization');
 window.addEventListener("pageshow", (event) => {
-        if(!token){
-            window.location.replace("http://localhost:63342/MeuPrimeiroFront/login/login.html");
-        }
+    if(!token){
+        window.location.replace("http://localhost:63342/MeuPrimeiroFront/login/login.html");
+    }
 });
 
 /*const response = await fetch(`${url}workouts`, {
@@ -152,12 +152,6 @@ response = `
             ],
             "commentaries":
             [
-                {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/rafinhapiercer-ae12c85a-1e7f-440f-b20e-e890c4a15f61-thumbnail.jpg",
-                    "username": "rafi",
-                    "time": "Yesterday at 6:07 AM",
-                    "commentary": "Oiiiiiiiiiiiiiiiii"
-                }
             ]
         },
         {
@@ -223,66 +217,7 @@ const noActivity = document.getElementById("no_activity");
 if(1 === 1){
     //let data = await response.json(); desativado para mock
     let data = JSON.parse(response);
-    let workout_template = document.getElementById("workout").content.cloneNode(true);
-    let exercises;
-    let seeMoreEx;
-    data.workouts.forEach(workout => {
-        workout_template = document.getElementById("workout").content.cloneNode(true);
-        workout_template.querySelector('.log_profile_pic').src = workout.image;
-        workout_template.querySelector('#workout_log_username').textContent = workout.username;
-        workout_template.querySelector('.workout_data').textContent = workout.data;
-        workout_template.querySelector('.workout_routine_name').textContent = workout.name;
-        workout_template.querySelector('#duration_value').textContent = workout.duration;
-        workout_template.querySelector('#volume_value').textContent = workout.volume;
-        workout_template.querySelector('#records_value').textContent = workout.records;
-        workout_template.querySelector('#like').textContent = workout.like;
-        workout_template.querySelector('#comments_count').textContent = workout.comments;
-        exercises = workout.exercises;
-        let exerciseLength = exercises.length;
-        let m = exerciseLength < 3 ? exerciseLength : 3;
-        for (let i = 0; i < m; i++) {
-            let exercise_template = document.getElementById("exercises").content.cloneNode(true);
-            exercise_template.querySelector('.exercise_img').src = exercises[i].image;
-            exercise_template.querySelector('.exercise_text').textContent = exercises[i].name;
-            workout_template.querySelector('#exercises_summary').appendChild(exercise_template);
-        }
-        if (exerciseLength > 3) {
-            seeMoreEx = document.getElementById('see_more_ex').content.cloneNode(true);
-            seeMoreEx.querySelector('#exercises_more_ex').textContent = `See ${exerciseLength - 3} more exercises`;
-            workout_template.querySelector('#exercises_summary').appendChild(seeMoreEx);
-        }
-        //carregar os comentarios com base no json, mostrar os 2 primeiros comentários apenas se for menor que dois o restante vai para o view more,
-        // o view more tem que ser atualizado em tempo real
-        //o view more e o outro tem que ser simultaneos ou seja uma coisa só
-        let commentaries = workout.commentaries;
-        let commentariesLength = commentaries.length;
-        let n = commentariesLength < 2 ? commentariesLength : 2;
-        let commentariesList = workout_template.querySelector('#comment');
-        commentariesList.appendChild(showComments(n, commentaries));
-        
-        if(commentariesLength > 2){
-            renderViewAllButton(commentariesList, commentariesLength, workout);
-        }
-        let home = document.querySelector(".home");
-        let actualLog = home.appendChild(workout_template.firstElementChild);
-        actualLog.id = workout.id;
-        checkCommentInput(workout, actualLog, false);
-    });
-    let moreComments = document.getElementsByClassName("link");
-    let workoutLogs = document.getElementsByClassName("workout_log");
-    /*for(let button of moreComments){
-        let actualLog = button.parentElement.parentElement.parentElement.parentElement;
-        for(let o= 0; o < workoutLogs.length; o++){
-            if(actualLog.isEqualNode(workoutLogs[o])){
-                button.allComments = data.workouts[o].commentaries;
-            }
-        }
-        button.addEventListener("click", (event) => {
-            showCommentOverlay(event);
-            let overlay = true;
-            checkCommentInput(data.workouts, overlay);
-        });
-    }*/
+    data.workouts.forEach(workout => renderWorkout(workout));
 }
 
 else if(response.status === 404){
@@ -291,16 +226,59 @@ else if(response.status === 404){
 else{
     noActivity.style.display = "";
 }
+
+export function renderWorkout(workout){
+    let workout_template = document.getElementById("workout").content.cloneNode(true);
+    workout_template.querySelector('.log_profile_pic').src = workout.image;
+    workout_template.querySelector('#workout_log_username').textContent = workout.username;
+    workout_template.querySelector('.workout_data').textContent = workout.data;
+    workout_template.querySelector('.workout_routine_name').textContent = workout.name;
+    workout_template.querySelector('#duration_value').textContent = workout.duration;
+    workout_template.querySelector('#volume_value').textContent = workout.volume;
+    workout_template.querySelector('#records_value').textContent = workout.records;
+    workout_template.querySelector('#like').textContent = workout.like;
+    workout_template.querySelector('#comments_count').textContent = workout.comments;
+    let exercises = workout.exercises;
+    let exerciseLength = exercises.length;
+    let m = exerciseLength < 3 ? exerciseLength : 3;
+    for (let i = 0; i < m; i++) {
+        let exercise_template = document.getElementById("exercises").content.cloneNode(true);
+        exercise_template.querySelector('.exercise_img').src = exercises[i].image;
+        exercise_template.querySelector('.exercise_text').textContent = exercises[i].name;
+        workout_template.querySelector('#exercises_summary').appendChild(exercise_template);
+    }
+    if (exerciseLength > 3) {
+        let seeMoreEx = document.getElementById('see_more_ex').content.cloneNode(true);
+        seeMoreEx.querySelector('#exercises_more_ex').textContent = `See ${exerciseLength - 3} more exercises`;
+        workout_template.querySelector('#exercises_summary').appendChild(seeMoreEx);
+    }
+    let commentaries = workout.commentaries;
+    let commentariesLength = commentaries.length;
+    let n = commentariesLength < 2 ? commentariesLength : 2;
+    let commentariesList = workout_template.querySelector('#comment');
+    commentariesList.appendChild(showComments(n, commentaries));
+    getCommentIconByList(commentariesList).onclick = function () {
+        renderCommentOverlay(commentariesList, workout);
+    };
+    updateCommentIcon(commentariesLength, commentariesList);
+    if(commentariesLength > 2){
+        renderViewAllButton(commentariesList, commentariesLength, workout);
+    }
+    let home = document.querySelector(".home");
+    let actualLog = home.appendChild(workout_template.firstElementChild);
+    actualLog.id = workout.id;
+    checkCommentInput(workout, actualLog, false);
+}
 export function checkCommentInput(workout, actualLog, overlay = false){
     let inputComment = actualLog.querySelector('#comentario');
     let postButton = actualLog.querySelector('.post_comment');
     inputComment.addEventListener("input", (event) => {
-        let inputComment = event.currentTarget.value; //para cada letra digitada ele ta rodando o event listener e o post roda junto com o click para cada letra
+        let inputComment = event.currentTarget.value;
         let postStyle = postButton.style;
         if(inputComment.length > 0) {
             postStyle.cursor = "pointer";
             postStyle.color = "blue";
-            postButton.onclick = function(event) {postComment(event, workout, overlay);}
+            postButton.onclick = async function(event) {await postComment(event, workout, overlay);}
         }
         else{
             disablePost(postButton, postStyle);
@@ -309,9 +287,6 @@ export function checkCommentInput(workout, actualLog, overlay = false){
 }
 
 export async function postComment(event, workout, overlay){
-        //preciso criar um fetch para o front e, ao mesmo tempo, adicionar o valor no html para reproduzir sem precisar recarregar a pagina
-        //para fazer isso posso criar um objeto diretamente (não sei como faz) ou posso colocar direto no mock(ñão sei como faz)
-        //pensei em criar variaveis e usar tanto para fazer o fetch quanto para exbir no html
         let postButton = event.currentTarget;
         let input = postButton.parentElement.querySelector("#comentario");
         let commentary = input.value;
@@ -329,7 +304,7 @@ export async function postComment(event, workout, overlay){
         {
             "image": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg",
             "username": "pl",
-            "commentary": "${commentary}"
+            "commentary": ${JSON.stringify(commentary)}
         }`
         let responseParse = JSON.parse(response);
 
@@ -347,19 +322,17 @@ export async function postComment(event, workout, overlay){
             updateCommentary(overlay, comment_template, commentariesList, commentaries.length, workout);
         }
 }
-export function renderCommentOverlay(event, workout){
+export function renderCommentOverlay(commentariesElementList, workout){
     const body = document.body;
     body.style.overflowY = "hidden";
-    let moreComments = event.currentTarget;
     let allComments = workout.commentaries;
-    let workoutDone = moreComments.parentElement.parentElement.parentElement.cloneNode(true);
+    let workoutDone = commentariesElementList.parentElement.parentElement.cloneNode(true);
     clearInput(workoutDone.querySelector('#comentario'));
     workoutDone.querySelector('#exercises_summary').remove();
-    workoutDone.querySelector('.link').remove();
+    if(workoutDone.querySelector('.link') !== null) workoutDone.querySelector('.link').remove();
     workoutDone.prepend(document.getElementById("close_scroll").content.cloneNode(true));
     let commentList = workoutDone.querySelector('#comment');
-
-    //Eu não precisaria deletar se a lógica estivesse correta e os dois fossem interligados
+    getCommentIconByList(commentList).parentElement.remove();
     while(commentList.firstChild) commentList.removeChild(commentList.firstChild);
     if(allComments.length > 7) commentList.style.overflowY = "scroll";
     commentList.appendChild(showComments(allComments.length, allComments));
@@ -392,21 +365,25 @@ export function closeOverlay(){
 
 export function updateCommentary(overlay, comment_template, commentariesList, commentariesLength, workout){
     if(overlay === true) {
-        addCommentary(commentariesList, comment_template);
+        addCommentary(commentariesList, comment_template.cloneNode(true));
         checkOverflow(workout, commentariesList);
         let home_list = searchLogIdByWorkout(workout).querySelector('#comment');
-        renderViewAllButton(home_list, commentariesLength, workout)
+        updateCommentIcon(commentariesLength, home_list);
+        updateHomeComments(home_list, comment_template, commentariesLength, workout);
     }
-    else if(commentariesList.childElementCount < 2) commentariesList.appendChild(comment_template);
-    else renderViewAllButton(commentariesList, commentariesLength, workout);
+    else{
+        updateCommentIcon(commentariesLength, commentariesList);
+        if(commentariesList.childElementCount < 2) addCommentary(commentariesList, comment_template)
+        else renderViewAllButton(commentariesList, commentariesLength, workout);
+    }
 }
 export function renderViewAllButton(commentariesElementList, commentariesLength, workout){
     if (commentariesElementList.querySelector('#exercises_more') === null){
         let seeMore = document.getElementById('see_more').content.cloneNode(true);
         seeMore.querySelector('#exercises_more').textContent = `View all ${commentariesLength} comments`;
         commentariesElementList.appendChild(seeMore);
-        commentariesElementList.querySelector('.link').onclick = function (event) {
-            renderCommentOverlay(event, workout);
+        getViewAllBtn(commentariesElementList).onclick = function () {
+            renderCommentOverlay(commentariesElementList, workout);
         };
     }
     else {
@@ -427,12 +404,29 @@ export function addCommentary(commentariesList, comment_template){
 export function checkOverflow(workout, commentariesList){
     if(workout.commentaries.length > 7) {commentariesList.style.overflowY = "scroll"}
 }
+export function updateCommentIcon(commentariesLength, home_list){
+    home_list.parentElement.querySelector('#comments_count').textContent = `${commentariesLength}`;
+}
 export function searchLogIdByWorkout(workout){
     let workout_List = document.getElementsByClassName('workout_log');
     for(let n = 0; n < workout_List.length; n++){
         if (parseInt(workout_List[n].id) === workout.id){
             return workout_List[n];
         }
+    }
+}
+export function getCommentIconByList(commentariesList){
+    return commentariesList.parentElement.getElementsByClassName("emote")[1];
+}
+export function getViewAllBtn(node){
+    return node.querySelector('.link');
+}
+export function updateHomeComments(home_list, comment_template, commentariesLength, workout){
+    if(home_list.childElementCount < 2){
+        addCommentary(home_list, comment_template);
+    }
+    else{
+        renderViewAllButton(home_list, commentariesLength, workout);
     }
 }
 document.getElementById("exit").addEventListener("click", () => {
