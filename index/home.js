@@ -23,6 +23,7 @@ response = `
     "workouts": 
     [
         {
+            "id": 1,
             "image": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg",
             "username": "Xestro",
             "data": "Dec 30, 2025, 11:23PM",
@@ -128,6 +129,7 @@ response = `
             ]
         },
         {
+            "id": 2,
             "image": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg",
             "username": "Xestro",
             "data": "Dec 30, 2025, 11:23PM",
@@ -159,6 +161,7 @@ response = `
             ]
         },
         {
+            "id": 3,
             "image": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg",
             "username": "Xestro",
             "data": "Dec 30, 2025, 11:23PM",
@@ -260,8 +263,10 @@ if(1 === 1){
         if(commentariesLength > 2){
             renderViewAllButton(commentariesList, commentariesLength, workout);
         }
-        document.getElementsByClassName("home")[0].appendChild(workout_template);
-        checkCommentInput(workout);
+        let home = document.querySelector(".home");
+        let actualLog = home.appendChild(workout_template.firstElementChild);
+        actualLog.id = workout.id;
+        checkCommentInput(workout, actualLog, false);
     });
     let moreComments = document.getElementsByClassName("link");
     let workoutLogs = document.getElementsByClassName("workout_log");
@@ -286,26 +291,21 @@ else if(response.status === 404){
 else{
     noActivity.style.display = "";
 }
-export function checkCommentInput(workout, overlay = false){
-    let postButtons = document.getElementsByClassName("post_comment");
-    for(let k = 0; k < postButtons.length; k++){
-        let inputComment = postButtons[k].parentElement.querySelector('#comentario');
-        inputComment.addEventListener("input", (event) => {
-            let inputComment = event.currentTarget.value; //para cada letra digitada ele ta rodando o event listener e o post roda junto com o click para cada letra
-            let postStyle = postButtons[k].style;
-            if(inputComment.length > 0) {
-                postStyle.cursor = "pointer";
-                postStyle.color = "blue";
-                postButtons[k].onclick = function(event) {postComment(event, workout, overlay);}
-                //postButtons[k].addEventListener("click", (event) => postComment(event, workouts, k));
-            }
-            else{
-                postButtons[k].onclick = false;
-                postStyle.cursor = "";
-                postStyle.color = "gray";
-            }
-        })
-    }
+export function checkCommentInput(workout, actualLog, overlay = false){
+    let inputComment = actualLog.querySelector('#comentario');
+    let postButton = actualLog.querySelector('.post_comment');
+    inputComment.addEventListener("input", (event) => {
+        let inputComment = event.currentTarget.value; //para cada letra digitada ele ta rodando o event listener e o post roda junto com o click para cada letra
+        let postStyle = postButton.style;
+        if(inputComment.length > 0) {
+            postStyle.cursor = "pointer";
+            postStyle.color = "blue";
+            postButton.onclick = function(event) {postComment(event, workout, overlay);}
+        }
+        else{
+            disablePost(postButton, postStyle);
+        }
+    })
 }
 
 export async function postComment(event, workout, overlay){
@@ -313,7 +313,8 @@ export async function postComment(event, workout, overlay){
         //para fazer isso posso criar um objeto diretamente (não sei como faz) ou posso colocar direto no mock(ñão sei como faz)
         //pensei em criar variaveis e usar tanto para fazer o fetch quanto para exbir no html
         let postButton = event.currentTarget;
-        let commentary = postButton.parentElement.querySelector("#comentario").value;
+        let input = postButton.parentElement.querySelector("#comentario");
+        let commentary = input.value;
         /*response = await fetch(`${url}commentary`, {
             method: "POST",
             headers: {
@@ -334,6 +335,8 @@ export async function postComment(event, workout, overlay){
 
         //se tiver resposta boa executa (mockado pq não tem o endpoint)
         if(1===1) {
+            clearInput(input);
+            disablePost(postButton, postButton.style);
             let comment_template = document.getElementById("tpl_comment").content.cloneNode(true);
             let commentaries = workout.commentaries;
             commentaries.push({image: responseParse.image, username: responseParse.username, time: "Today at 08:00 PM", commentary: responseParse.commentary});
@@ -342,8 +345,6 @@ export async function postComment(event, workout, overlay){
             comment_template.querySelector("#comment_text").textContent = responseParse.commentary;
             let commentariesList = event.currentTarget.parentElement.parentElement.querySelector('#comment');
             updateCommentary(overlay, comment_template, commentariesList, commentaries.length, workout);
-            //commentariesList.appendChild(comment_template); //usar para adicionar comentário depois
-
         }
 }
 export function renderCommentOverlay(event, workout){
@@ -352,6 +353,7 @@ export function renderCommentOverlay(event, workout){
     let moreComments = event.currentTarget;
     let allComments = workout.commentaries;
     let workoutDone = moreComments.parentElement.parentElement.parentElement.cloneNode(true);
+    clearInput(workoutDone.querySelector('#comentario'));
     workoutDone.querySelector('#exercises_summary').remove();
     workoutDone.querySelector('.link').remove();
     workoutDone.prepend(document.getElementById("close_scroll").content.cloneNode(true));
@@ -364,11 +366,11 @@ export function renderCommentOverlay(event, workout){
     commentList.after(workoutDone.querySelector('.break_line'),workoutDone.querySelector('#reactions'));
     let commentOverlay = document.getElementById("comment_overlay").content.cloneNode(true);
     commentOverlay.querySelector('#comment_box_overlay').appendChild(workoutDone);
-    body.prepend(commentOverlay);
+    let overlayPage = body.prependChild(commentOverlay.firstElementChild);
     document.getElementById("comment_box_background").addEventListener("click", closeOverlay);
     workoutDone.querySelector("#x_button").addEventListener("click", closeOverlay);
-    let overlay = true;
-    checkCommentInput(workout, overlay);
+    checkCommentInput(workout, overlayPage, true);
+
 }
 export function showComments(n, commentaries){
     let commentsList = document.createDocumentFragment();
@@ -389,7 +391,12 @@ export function closeOverlay(){
 }
 
 export function updateCommentary(overlay, comment_template, commentariesList, commentariesLength, workout){
-    if(overlay === true) commentariesList.appendChild(comment_template);
+    if(overlay === true) {
+        addCommentary(commentariesList, comment_template);
+        checkOverflow(workout, commentariesList);
+        let home_list = searchLogIdByWorkout(workout).querySelector('#comment');
+        renderViewAllButton(home_list, commentariesLength, workout)
+    }
     else if(commentariesList.childElementCount < 2) commentariesList.appendChild(comment_template);
     else renderViewAllButton(commentariesList, commentariesLength, workout);
 }
@@ -406,7 +413,33 @@ export function renderViewAllButton(commentariesElementList, commentariesLength,
         commentariesElementList.querySelector('#exercises_more').textContent = `View all ${commentariesLength} comments`;
     }
 }
+export function clearInput(input){
+    input.value = '';
+}
+export function disablePost(postButton, postStyle){
+    postButton.onclick = false;
+    postStyle.cursor = "";
+    postStyle.color = "gray";
+}
+export function addCommentary(commentariesList, comment_template){
+    commentariesList.appendChild(comment_template);
+}
+export function checkOverflow(workout, commentariesList){
+    if(workout.commentaries.length > 7) {commentariesList.style.overflowY = "scroll"}
+}
+export function searchLogIdByWorkout(workout){
+    let workout_List = document.getElementsByClassName('workout_log');
+    for(let n = 0; n < workout_List.length; n++){
+        if (parseInt(workout_List[n].id) === workout.id){
+            return workout_List[n];
+        }
+    }
+}
 document.getElementById("exit").addEventListener("click", () => {
     cookies.remove('jwt_authorization', {path: '/'});
     window.location = "http://localhost:63342/MeuPrimeiroFront/login/login.html";
 });
+
+Element.prototype.prependChild = function(newElement) {
+    return this.insertBefore(newElement, this.firstChild);
+};
