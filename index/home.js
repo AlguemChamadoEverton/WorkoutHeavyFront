@@ -267,6 +267,7 @@ export function renderWorkout(workout){
     let home = document.querySelector(".home");
     let actualLog = home.appendChild(workout_template.firstElementChild);
     actualLog.id = workout.id;
+    checkLike();
     checkCommentInput(workout, actualLog, false);
 }
 export function checkCommentInput(workout, actualLog, overlay = false){
@@ -367,7 +368,7 @@ export function updateCommentary(overlay, comment_template, commentariesList, co
     if(overlay === true) {
         addCommentary(commentariesList, comment_template.cloneNode(true));
         checkOverflow(workout, commentariesList);
-        let home_list = searchLogIdByWorkout(workout).querySelector('#comment');
+        let home_list = searchLogByWorkout(workout).querySelector('#comment');
         updateCommentIcon(commentariesLength, home_list);
         updateHomeComments(home_list, comment_template, commentariesLength, workout);
     }
@@ -407,7 +408,7 @@ export function checkOverflow(workout, commentariesList){
 export function updateCommentIcon(commentariesLength, home_list){
     home_list.parentElement.querySelector('#comments_count').textContent = `${commentariesLength}`;
 }
-export function searchLogIdByWorkout(workout){
+export function searchLogByWorkout(workout){
     let workout_List = document.getElementsByClassName('workout_log');
     for(let n = 0; n < workout_List.length; n++){
         if (parseInt(workout_List[n].id) === workout.id){
@@ -428,6 +429,37 @@ export function updateHomeComments(home_list, comment_template, commentariesLeng
     else{
         renderViewAllButton(home_list, commentariesLength, workout);
     }
+}
+export async function postLike(workout, like){
+    /*let response = await fetch(`${url}workout/like`, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                id: `${workout.id}`,
+                action:`${like}`
+            })
+        })desativado para mock*/
+    if (1===1) return true;
+    return false;
+}
+export function updateLikes(log, workout, overlay, like) {
+    let likes_count = like ? workout.like + 1 : workout.like - 1;
+        if (overlay) addLike(searchLogByWorkout(workout), likes_count);
+        addLike(log, likes_count);
+}
+export function addLike(log, likes_count){
+    log.querySelector('#like').textContent = likes_count;
+}
+export function checkLike(log, workout, overlay, like){
+    //criando a funcionalidade do like, notei que vou precisar de um toggle para saber se foi clicado ou não, tenho que criar em css e ele deve ser ativado de acordo com o que for retornado no json quando carregar a página
+    log.querySelector("#reactions").firstChild.onclick = async function (event) {
+        event.currentTarget.
+        if (await postLike(log, workout)) updateLikes(log, workout, overlay, like);
+        else console.log("Erro");
+    };
 }
 document.getElementById("exit").addEventListener("click", () => {
     cookies.remove('jwt_authorization', {path: '/'});
