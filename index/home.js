@@ -32,6 +32,7 @@ response = `
             "volume": "8000kg",
             "records": 3,
             "like": 3,
+            "liked": 1,
             "comments": 3,
             "exercises": 
             [
@@ -138,6 +139,7 @@ response = `
             "volume": "8005kg",
             "records": 10,
             "like": 2,
+            "liked": 0,
             "comments": 2,
             "exercises": 
             [
@@ -164,6 +166,7 @@ response = `
             "volume": "8005kg",
             "records": 10,
             "like": 1,
+            "liked": 1,
             "comments": 1,
             "exercises": 
             [
@@ -267,7 +270,8 @@ export function renderWorkout(workout){
     let home = document.querySelector(".home");
     let actualLog = home.appendChild(workout_template.firstElementChild);
     actualLog.id = workout.id;
-    checkLike();
+    changeLikeColor(actualLog, workout.liked);
+    checkLike(actualLog, workout, false);
     checkCommentInput(workout, actualLog, false);
 }
 export function checkCommentInput(workout, actualLog, overlay = false){
@@ -343,6 +347,7 @@ export function renderCommentOverlay(commentariesElementList, workout){
     let overlayPage = body.prependChild(commentOverlay.firstElementChild);
     document.getElementById("comment_box_background").addEventListener("click", closeOverlay);
     workoutDone.querySelector("#x_button").addEventListener("click", closeOverlay);
+    checkLike(overlayPage, workout, true);
     checkCommentInput(workout, overlayPage, true);
 
 }
@@ -445,21 +450,42 @@ export async function postLike(workout, like){
     if (1===1) return true;
     return false;
 }
-export function updateLikes(log, workout, overlay, like) {
-    let likes_count = like ? workout.like + 1 : workout.like - 1;
-        if (overlay) addLike(searchLogByWorkout(workout), likes_count);
-        addLike(log, likes_count);
+export function updateLike(log, workout, overlay) {
+    updateLikeData(workout);
+    updateLikeElements(log, workout, overlay);
 }
-export function addLike(log, likes_count){
+export function setLikeCount(log, likes_count){
     log.querySelector('#like').textContent = likes_count;
+
 }
-export function checkLike(log, workout, overlay, like){
-    //criando a funcionalidade do like, notei que vou precisar de um toggle para saber se foi clicado ou não, tenho que criar em css e ele deve ser ativado de acordo com o que for retornado no json quando carregar a página
-    log.querySelector("#reactions").firstChild.onclick = async function (event) {
-        event.currentTarget.
-        if (await postLike(log, workout)) updateLikes(log, workout, overlay, like);
+export function checkLike(log, workout, overlay){
+    log.querySelector("#reactions").firstElementChild.addEventListener("click", async () => {
+        if (await postLike(log, workout)) updateLike(log, workout, overlay);
         else console.log("Erro");
-    };
+    });
+}
+export function changeLikeColor(log, liked){
+    let like_button = log.querySelector("#like").parentElement;
+    liked ? like_button.classList.add("liked") :
+        like_button.classList.remove("liked");
+}
+export function updateLikeData(workout){
+    if (workout.liked){
+        workout.like -= 1;
+        workout.liked = 0;
+    }
+    else {
+        workout.like += 1;
+        workout.liked = 1;
+    }
+}
+export function updateLikeElements(log, workout, overlay){
+    const logs = overlay ? [log, searchLogByWorkout(workout)] : [log];
+    logs.forEach(l => renderLike(l, workout));
+}
+export function renderLike(l, workout){
+    setLikeCount(l, workout.like);
+    changeLikeColor(l, workout.liked);
 }
 document.getElementById("exit").addEventListener("click", () => {
     cookies.remove('jwt_authorization', {path: '/'});
