@@ -34,7 +34,7 @@
     width: 690px;
     background-color: #161618;
 }
-.profile{
+.profile_box{
     display: flex;
     flex-direction: column;
     align-items: center;
