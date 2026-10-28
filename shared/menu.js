@@ -17,7 +17,7 @@ search_users.oninput = async function (event) {
 
 for (let i = 0; i < nav_buttons.length; i++){
     let value = nav_buttons[i];
-    if(value.style.color !== "rgb(30, 144, 255)"){
+    if(!value.classList.contains("active")){
         value.addEventListener("mouseover", menuHoverChangeColor);
         value.addEventListener("mouseleave", menuBackToDefault)
     }

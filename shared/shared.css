@@ -76,6 +76,10 @@ body {
     height: 40px;
     border-radius: 7px;
 }
+.nav_button.active{
+    background-color: #21272f;
+    color: #1E90FF;
+}
 .nav_text{
     padding-left: 10px;
 }
