@@ -172,6 +172,8 @@
 }
 #exercises_summary{
     width: 100%;
+    text-decoration: none;
+    cursor: pointer;
     max-height: 212px;
     display: flex;
     flex-direction: column;

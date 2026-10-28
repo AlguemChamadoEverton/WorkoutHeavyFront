@@ -193,6 +193,7 @@ export function renderWorkout(workout){
     workout_template.querySelector('#records_value').textContent = workout.records;
     workout_template.querySelector('#like').textContent = workout.like;
     workout_template.querySelector('#comments_count').textContent = workout.comments;
+    workout_template.querySelector('#exercises_summary').href = `../workout/workout.html?id=${workout.id}`;
     let exercises = workout.exercises;
     let exerciseLength = exercises.length;
     let m = exerciseLength < 3 ? exerciseLength : 3;

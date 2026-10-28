@@ -343,3 +343,42 @@
     z-index: 1000;
     opacity: 20%
 }
+.not_found{
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    min-height: 400px;
+    padding-bottom: 0;
+}
+.not_found_img{
+    width: 160px;
+}
+.not_found_title{
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+.not_found_text{
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    max-width: 300px;
+    line-height: 1.5;
+}
+.not_found_profile{
+    align-self: flex-start;
+    height: auto;
+    gap: 20px;
+    padding: 16px 0;
+}
+.follow_button{
+    width: 90%;
+    height: 38px;
+    border: none;
+    border-radius: 8px;
+    background-color: #1E90FF;
+    color: white;
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+}

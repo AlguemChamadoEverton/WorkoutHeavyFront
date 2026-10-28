@@ -30,10 +30,30 @@
             </div>
         </div>
     </template>
+    <template id="session">
+        <div class="session">
+            <div class="exercise">
+                <img class="exercise_img" src="https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/bench-press-2.png">
+                <p class="exercise_text exercise_name"> 4 Sets Bench Press (Barbell)</p>
+            </div>
+            <div class="info_labels">
+                <span class="sets_label">SETS</span>
+                <span class="weight_reps_label">WEIGHT & REPS</span>
+            </div>
+        </div>
+    </template>
+    <template id="set_info">
+        <div class="set_info">
+            <span class="set_status normal_set">1</span>
+            <span class="weight_reps" style="color: white">90kg x 6 reps</span>
+            <div class="sets_records"></div>
+        </div>
+    </template>
+    <template id="best"><span class="best">🏅 Best Volume</span></template>
     <template id="see_more"><a class="link"><span id="exercises_more">See 3 more exercises</span></a></template>
     <div class="left_panel">
         <div class="logo_panel">
-            <a class="logo">HEAVY</a>
+            <a class="logo" href="../index/home.html">HEAVY</a>
         </div>
         <div class="search_panel">
             <input class="search_users" type="search" placeholder="Search users" >
@@ -192,48 +212,6 @@
                         </div>
                     </div>
                     <div id="exercises_summary">
-                        <div class="session">
-                            <div class="exercise">
-                                <img class="exercise_img" src="https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/bench-press-2.png">
-                                <p class="exercise_text exercise_name"> 4 Sets Bench Press (Barbell)</p>
-                            </div>
-                            <div class="info_labels">
-                                <span class="sets_label">SETS</span>
-                                <span class="weight_reps_label">WEIGHT & REPS</span>
-                            </div>
-                            <div class="set_info">
-                                <span class="set_status failure_set">F</span>
-                                <span class="weight_reps" style="color: white">100kg x 3 reps</span>
-                                <div class="sets_records">
-                                    <span class="best">🏅 Best Volume</span>
-                                    <span class="best">🏅 Best 1 Rep Max</span>
-                                </div>
-                            </div>
-                            <div class="set_info">
-                                <span class="set_status normal_set">1</span>
-                                <span class="weight_reps" style="color: white">90kg x 6 reps</span>
-                                <div class="sets_records">
-                                    <span class="best">🏅 Best Volume</span>
-                                    <span class="best">🏅 Best 1 Rep Max</span>
-                                </div>
-                            </div>
-                            <div class="set_info">
-                                <span class="set_status drop_set">D</span>
-                                <span class="weight_reps" style="color: white">70kg x 10 reps</span>
-                                <div class="sets_records">
-                                    <span class="best">🏅 Best Volume</span>
-                                    <span class="best">🏅 Best 1 Rep Max</span>
-                                </div>
-                            </div>
-                            <div class="set_info">
-                                <span class="set_status warmup_set">W</span>
-                                <span class="weight_reps" style="color: white">60kg x 12 reps</span>
-                                <div class="sets_records">
-                                    <span class="best">🏅 Best Volume</span>
-                                    <span class="best">🏅 Best 1 Rep Max</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -256,6 +234,31 @@
                 </div>
             </template>
         </div>
+        </template>
+        <template class="not_found_template">
+            <div class="home">
+                <div class="workout_log not_found">
+                    <img class="not_found_img" src="../shared/not_found.svg" alt="not_found_img">
+                    <span class="not_found_title">Workout not found</span>
+                    <span class="not_found_text">This workout might not exist anymore. Make sure you have the right link.</span>
+                </div>
+                <div class="profile_box not_found_profile">
+                    <div class="profile">
+                        <img class="user_img_big" src="../shared/guest.svg">
+                        <div class="profile_text">
+                            <span class="username">-</span>
+                            <div class="profile_info">
+                                <div class="profile_labels">
+                                    <span>Workouts <br><span class="profile_numbers">-</span></span>
+                                    <span>Following <br><span class="profile_numbers">-</span></span>
+                                    <span>Followers<br><span class="profile_numbers">-</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="follow_button">Follow</button>
+                </div>
+            </div>
         </template>
     </div>
 <script type="module" src="workout.js"></script>
