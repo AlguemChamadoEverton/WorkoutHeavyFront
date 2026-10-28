@@ -1,9 +1,9 @@
 import Cookies from "https://esm.sh/universal-cookie";
 import {showComments, getCommentIconByList, renderCommentOverlay, updateCommentIcon, renderViewAllButton,
     changeLikeColor, checkLike, checkCommentInput} from "../shared/social.js";
-import {renderMenu} from "../shared/menu.js";
+import {initMenu} from "../shared/menu.js";
 
-renderMenu();
+initMenu();
 
 let response;
 const url = "http://localhost:5255/";

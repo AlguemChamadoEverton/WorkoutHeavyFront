@@ -76,6 +76,9 @@ body {
     height: 40px;
     border-radius: 7px;
 }
+.nav_button:not(.active):hover{
+    background-color: rgba(39,39,39,0.29);
+}
 .nav_button.active{
     background-color: #21272f;
     color: #1E90FF;
