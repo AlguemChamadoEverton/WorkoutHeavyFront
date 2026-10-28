@@ -109,6 +109,27 @@ body {
 .user_name{
     color: white;
 }
+.search_result{
+    position: absolute;
+    border-radius: 10px;
+    top: 125px;
+    left: 15px;
+    background-color: black;
+    width: 300px;
+    min-height: 30px;
+    max-height: 300px;
+    overflow-y: scroll;
+    scrollbar-color: #9e9e9e #2c2c2c;
+    display: flex;
+    flex-direction: column;
+    padding: 7px;
+    gap: 15px;
+}
+.results{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 .loader {
     width: 30px;
     padding: 3px;

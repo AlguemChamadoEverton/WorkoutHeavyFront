@@ -1,10 +1,13 @@
 import {getCommentIconByList, renderCommentOverlay, updateCommentIcon, setLikeCount, changeLikeColor, checkLike}
     from "../shared/social.js";
+import {renderMenu} from "../shared/menu.js";
 /*import Cookies from "https://esm.sh/universal-cookie";
 
 const url = "http://localhost:5255/";
 let cookies = new Cookies();
 const token = cookies.get('jwt_authorization'); codigo oficial*/
+
+renderMenu();
 
 let response;
 //response = await getWorkout(); desativado para mock
