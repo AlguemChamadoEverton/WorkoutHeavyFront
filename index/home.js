@@ -1,4 +1,6 @@
 import Cookies from "https://esm.sh/universal-cookie";
+import {showComments, getCommentIconByList, renderCommentOverlay, updateCommentIcon, renderViewAllButton,
+    changeLikeColor, checkLike, checkCommentInput} from "../shared/social.js";
 
 let response;
 const url = "http://localhost:5255/";
@@ -6,7 +8,7 @@ let cookies = new Cookies();
 const token = cookies.get('jwt_authorization');
 window.addEventListener("pageshow", (event) => {
     if(!token){
-        window.location.replace("http://localhost:63342/MeuPrimeiroFront/login/login.html");
+        window.location.replace("http://localhost:63342/WorkoutHeavyFront/login/login.html");
     }
 });
 
@@ -24,192 +26,142 @@ response = `
     [
         {
             "id": 1,
-            "image": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg",
-            "username": "Xestro",
-            "data": "Dec 30, 2025, 11:23PM",
-            "name": "Maluquisse",
-            "duration": "1h30m",
-            "volume": "8000kg",
-            "records": 3,
-            "like": 3,
+            "image": "../shared/guest.svg",
+            "username": "everton.dev",
+            "data": "Oct 27, 2026, 7:12 AM",
+            "name": "Push Day - Peito e Tríceps",
+            "duration": "1h 12m",
+            "volume": "12,480 kg",
+            "records": 4,
+            "like": 48,
             "liked": 1,
-            "comments": 3,
+            "comments": 5,
             "exercises": 
             [
                 {
-                    "image": "https://barbend.com/wp-content/uploads/2025/01/Sitko-1.jpg",
-                    "name": "Deadlift"
+                    "image": "https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/bench-press-2.png",
+                    "name": "4 sets Bench Press (Barbell)"
                 },
                 {
-                    "image": "https://barbend.com/wp-content/uploads/2025/01/Sitko-1.jpg",
-                    "name": "Squat"
+                    "image": "https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/bench-press-2.png",
+                    "name": "4 sets Incline Bench Press (Barbell)"
                 },
                 {
-                    "image": "https://barbend.com/wp-content/uploads/2025/01/Sitko-1.jpg",
-                    "name": "Bench Press"
+                    "image": "https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/bench-press-2.png",
+                    "name": "3 sets Close Grip Bench Press"
                 },
                 {
-                    "image": "https://barbend.com/wp-content/uploads/2025/01/Sitko-1.jpg",
-                    "name": "Bench Press"
+                    "image": "https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/bench-press-2.png",
+                    "name": "3 sets Decline Bench Press"
                 }
             ],
             "commentaries":
             [
                 {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/rafinhapiercer-ae12c85a-1e7f-440f-b20e-e890c4a15f61-thumbnail.jpg",
-                    "username": "rafinha",
-                    "time": "Yesterday at 6:07 AM",
-                    "commentary": "Oiiiiiiiiiiiiiiiii"
+                    "image": "../shared/guest.svg",
+                    "username": "marina.lifts",
+                    "time": "Today at 7:40 AM",
+                    "commentary": "100kg no supino?! Que evolução, monstro 🔥"
                 },
                 {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/sofi_brandao-bb65b81c-44df-4ae9-9937-8b696da82a93.jpg",
-                    "username": "sofi",
-                    "time": "Dec 25, 2024, 12:30PM",
-                    "commentary": "legal"
+                    "image": "../shared/guest.svg",
+                    "username": "caio_strength",
+                    "time": "Today at 8:02 AM",
+                    "commentary": "4 PRs num treino só, respeita 💪"
                 },
                 {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/yllanao-60d81e5a-f969-431d-99a4-4c52e4f8ee9f.jpg",
-                    "username": "b",
-                    "time": "Dec 25, 2024, 12:30PM",
-                    "commentary": "macaco"
+                    "image": "../shared/guest.svg",
+                    "username": "julia.fit",
+                    "time": "Today at 8:15 AM",
+                    "commentary": "Bora treinar junto semana que vem!"
                 },
                 {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/yllanao-60d81e5a-f969-431d-99a4-4c52e4f8ee9f.jpg",
-                    "username": "k",
-                    "time": "Dec 30, 2024, 12:38PM",
-                    "commentary": "tigre"
+                    "image": "../shared/guest.svg",
+                    "username": "rodrigo.pr",
+                    "time": "Today at 9:30 AM",
+                    "commentary": "Consistência pura. Inspiração demais!"
                 },
                 {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/rafinhapiercer-ae12c85a-1e7f-440f-b20e-e890c4a15f61-thumbnail.jpg",
-                    "username": "rafinha",
-                    "time": "Yesterday at 6:07 AM",
-                    "commentary": "Oiiiiiiiiiiiiiiiii"
-                },
-                {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/sofi_brandao-bb65b81c-44df-4ae9-9937-8b696da82a93.jpg",
-                    "username": "sofi",
-                    "time": "Dec 25, 2024, 12:30PM",
-                    "commentary": "legal"
-                },
-                {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/yllanao-60d81e5a-f969-431d-99a4-4c52e4f8ee9f.jpg",
-                    "username": "b",
-                    "time": "Dec 25, 2024, 12:30PM",
-                    "commentary": "macaco"
-                },
-                {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/yllanao-60d81e5a-f969-431d-99a4-4c52e4f8ee9f.jpg",
-                    "username": "k",
-                    "time": "Dec 30, 2024, 12:38PM",
-                    "commentary": "tigre"
-                },
-                {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/rafinhapiercer-ae12c85a-1e7f-440f-b20e-e890c4a15f61-thumbnail.jpg",
-                    "username": "rafinha",
-                    "time": "Yesterday at 6:07 AM",
-                    "commentary": "Oiiiiiiiiiiiiiiiii"
-                },
-                {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/sofi_brandao-bb65b81c-44df-4ae9-9937-8b696da82a93.jpg",
-                    "username": "sofi",
-                    "time": "Dec 25, 2024, 12:30PM",
-                    "commentary": "legal"
-                },
-                {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/yllanao-60d81e5a-f969-431d-99a4-4c52e4f8ee9f.jpg",
-                    "username": "b",
-                    "time": "Dec 25, 2024, 12:30PM",
-                    "commentary": "macaco"
-                },
-                {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/yllanao-60d81e5a-f969-431d-99a4-4c52e4f8ee9f.jpg",
-                    "username": "k",
-                    "time": "Dec 30, 2024, 12:38PM",
-                    "commentary": "tigre"
+                    "image": "../shared/guest.svg",
+                    "username": "bia.gym",
+                    "time": "Today at 10:05 AM",
+                    "commentary": "Esse volume tá absurdo 👏"
                 }
             ]
         },
         {
             "id": 2,
-            "image": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg",
-            "username": "Xestro",
-            "data": "Dec 30, 2025, 11:23PM",
-            "name": "Maluquaisse",
-            "duration": "1h35m",
-            "volume": "8005kg",
-            "records": 10,
-            "like": 2,
+            "image": "../shared/guest.svg",
+            "username": "marina.lifts",
+            "data": "Oct 26, 2026, 6:45 PM",
+            "name": "Leg Day - Força",
+            "duration": "1h 28m",
+            "volume": "18,920 kg",
+            "records": 2,
+            "like": 31,
             "liked": 0,
             "comments": 2,
             "exercises": 
             [
                 {
-                    "image": "https://pump-app.s3.eu-west-2.amazonaws.com/exercise-thumbnails/00251201-Barbell-Bench-Press_Chest_thumbnail@3x.jpg",
-                    "name": "Deadlift"
+                    "image": "https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/barbell-squat-2.png",
+                    "name": "5 sets Squat (Barbell)"
                 },
                 {
-                    "image": "https://barbend.com/wp-content/uploads/2025/01/Sitko-1.jpg",
-                    "name": "Squat"
+                    "image": "https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/barbell-dead-lifts-2.png",
+                    "name": "4 sets Romanian Deadlift (Barbell)"
                 }
             ],
             "commentaries":
             [
+                {
+                    "image": "../shared/guest.svg",
+                    "username": "everton.dev",
+                    "time": "Oct 26, 2026, 7:10 PM",
+                    "commentary": "Agachamento impecável! 🦵"
+                },
+                {
+                    "image": "../shared/guest.svg",
+                    "username": "caio_strength",
+                    "time": "Oct 26, 2026, 7:32 PM",
+                    "commentary": "Quase 19 toneladas, absurdo"
+                }
             ]
         },
         {
             "id": 3,
-            "image": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg",
-            "username": "Xestro",
-            "data": "Dec 30, 2025, 11:23PM",
-            "name": "Maluquaisse",
-            "duration": "1h35m",
-            "volume": "8005kg",
-            "records": 10,
-            "like": 1,
+            "image": "../shared/guest.svg",
+            "username": "caio_strength",
+            "data": "Oct 25, 2026, 9:20 AM",
+            "name": "Pull Day - Costas e Bíceps",
+            "duration": "1h 05m",
+            "volume": "10,350 kg",
+            "records": 1,
+            "like": 22,
             "liked": 1,
             "comments": 1,
             "exercises": 
             [
                 {
-                    "image": "https://barbend.com/wp-content/uploads/2025/01/Sitko-1.jpg",
-                    "name": "Deadlift"
+                    "image": "https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/barbell-dead-lifts-2.png",
+                    "name": "5 sets Deadlift (Barbell)"
                 },
                 {
-                    "image": "https://barbend.com/wp-content/uploads/2025/01/Sitko-1.jpg",
-                    "name": "Squat"
+                    "image": "https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/barbell-dead-lifts-2.png",
+                    "name": "4 sets Bent Over Row (Barbell)"
                 },
                 {
-                    "image": "https://barbend.com/wp-content/uploads/2025/01/Sitko-1.jpg",
-                    "name": "Squat"
-                },
-                {
-                    "image": "https://barbend.com/wp-content/uploads/2025/01/Sitko-1.jpg",
-                    "name": "Squat"
-                },
-                {
-                    "image": "https://barbend.com/wp-content/uploads/2025/01/Sitko-1.jpg",
-                    "name": "Squat"
+                    "image": "https://raw.githubusercontent.com/everkinetic/data/master/src/images-web/barbell-squat-2.png",
+                    "name": "3 sets Barbell Shrug"
                 }
             ],
             "commentaries":
             [
                 {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/rafinhapiercer-ae12c85a-1e7f-440f-b20e-e890c4a15f61-thumbnail.jpg",
-                    "username": "rafinha",
-                    "time": "Yesterday at 6:07 AM",
-                    "commentary": "Oiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"
-                },
-                {
-                    "image": "https://d2l9nsnmtah87f.cloudfront.net/profile-images/sofi_brandao-bb65b81c-44df-4ae9-9937-8b696da82a93.jpg",
-                    "username": "sofi",
-                    "time": "Dec 25, 2024, 12:30PM",
-                    "commentary": "legal"
-                },
-                {
-                    "image": "https://lh3.googleusercontent.com/a/ACg8ocLVkw5rPXMrpfIPv12qQp9tCNPj7Au1yNkVEEbESWRxy4rRDndkeA=s96-c",
-                    "username": "b",
-                    "time": "Dec 25, 2024, 12:30PM",
-                    "commentary": "macaco"
+                    "image": "../shared/guest.svg",
+                    "username": "julia.fit",
+                    "time": "Oct 25, 2026, 10:01 AM",
+                    "commentary": "Terra de 180kg é outro nível 🏆"
                 }
             ]
         }
@@ -274,224 +226,7 @@ export function renderWorkout(workout){
     checkLike(actualLog, workout, false);
     checkCommentInput(workout, actualLog, false);
 }
-export function checkCommentInput(workout, actualLog, overlay = false){
-    let inputComment = actualLog.querySelector('#comentario');
-    let postButton = actualLog.querySelector('.post_comment');
-    inputComment.addEventListener("input", (event) => {
-        let inputComment = event.currentTarget.value;
-        let postStyle = postButton.style;
-        if(inputComment.length > 0) {
-            postStyle.cursor = "pointer";
-            postStyle.color = "blue";
-            postButton.onclick = async function(event) {await postComment(event, workout, overlay);}
-        }
-        else{
-            disablePost(postButton, postStyle);
-        }
-    })
-}
-
-export async function postComment(event, workout, overlay){
-        let postButton = event.currentTarget;
-        let input = postButton.parentElement.querySelector("#comentario");
-        let commentary = input.value;
-        /*response = await fetch(`${url}commentary`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                commentary: `${commentary}`
-            })
-        })desativado para mock*/
-        let response = `
-        {
-            "image": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg",
-            "username": "pl",
-            "commentary": ${JSON.stringify(commentary)}
-        }`
-        let responseParse = JSON.parse(response);
-
-        //se tiver resposta boa executa (mockado pq não tem o endpoint)
-        if(1===1) {
-            clearInput(input);
-            disablePost(postButton, postButton.style);
-            let comment_template = document.getElementById("tpl_comment").content.cloneNode(true);
-            let commentaries = workout.commentaries;
-            commentaries.push({image: responseParse.image, username: responseParse.username, time: "Today at 08:00 PM", commentary: responseParse.commentary});
-            comment_template.querySelector("#comment_profile_pic").src = responseParse.image;
-            comment_template.querySelector("#comment_user").textContent = responseParse.username;
-            comment_template.querySelector("#comment_text").textContent = responseParse.commentary;
-            let commentariesList = event.currentTarget.parentElement.parentElement.querySelector('#comment');
-            updateCommentary(overlay, comment_template, commentariesList, commentaries.length, workout);
-        }
-}
-export function renderCommentOverlay(commentariesElementList, workout){
-    const body = document.body;
-    body.style.overflowY = "hidden";
-    let allComments = workout.commentaries;
-    let workoutDone = commentariesElementList.parentElement.parentElement.cloneNode(true);
-    clearInput(workoutDone.querySelector('#comentario'));
-    workoutDone.querySelector('#exercises_summary').remove();
-    if(workoutDone.querySelector('.link') !== null) workoutDone.querySelector('.link').remove();
-    workoutDone.prepend(document.getElementById("close_scroll").content.cloneNode(true));
-    let commentList = workoutDone.querySelector('#comment');
-    getCommentIconByList(commentList).parentElement.remove();
-    while(commentList.firstChild) commentList.removeChild(commentList.firstChild);
-    if(allComments.length > 7) commentList.style.overflowY = "scroll";
-    commentList.appendChild(showComments(allComments.length, allComments));
-    commentList.after(workoutDone.querySelector('.break_line'),workoutDone.querySelector('#reactions'));
-    let commentOverlay = document.getElementById("comment_overlay").content.cloneNode(true);
-    commentOverlay.querySelector('#comment_box_overlay').appendChild(workoutDone);
-    let overlayPage = body.prependChild(commentOverlay.firstElementChild);
-    document.getElementById("comment_box_background").addEventListener("click", closeOverlay);
-    workoutDone.querySelector("#x_button").addEventListener("click", closeOverlay);
-    checkLike(overlayPage, workout, true);
-    checkCommentInput(workout, overlayPage, true);
-
-}
-export function showComments(n, commentaries){
-    let commentsList = document.createDocumentFragment();
-    for(let j = 0; j < n; j++){
-        let comment_template = document.getElementById("tpl_comment").content.cloneNode(true);
-        comment_template.querySelector('#comment_user').textContent = commentaries[j].username;
-        comment_template.querySelector('#comment_profile_pic').src = commentaries[j].image;
-        comment_template.querySelector('.time_ago').textContent = commentaries[j].time;
-        comment_template.querySelector('#comment_text').textContent = commentaries[j].commentary;
-        commentsList.appendChild(comment_template);
-    }
-    return commentsList;
-}
-
-export function closeOverlay(){
-    document.body.querySelector('.overlay').remove();
-    document.body.style.overflowY = "scroll";
-}
-
-export function updateCommentary(overlay, comment_template, commentariesList, commentariesLength, workout){
-    if(overlay === true) {
-        addCommentary(commentariesList, comment_template.cloneNode(true));
-        checkOverflow(workout, commentariesList);
-        let home_list = searchLogByWorkout(workout).querySelector('#comment');
-        updateCommentIcon(commentariesLength, home_list);
-        updateHomeComments(home_list, comment_template, commentariesLength, workout);
-    }
-    else{
-        updateCommentIcon(commentariesLength, commentariesList);
-        if(commentariesList.childElementCount < 2) addCommentary(commentariesList, comment_template)
-        else renderViewAllButton(commentariesList, commentariesLength, workout);
-    }
-}
-export function renderViewAllButton(commentariesElementList, commentariesLength, workout){
-    if (commentariesElementList.querySelector('#exercises_more') === null){
-        let seeMore = document.getElementById('see_more').content.cloneNode(true);
-        seeMore.querySelector('#exercises_more').textContent = `View all ${commentariesLength} comments`;
-        commentariesElementList.appendChild(seeMore);
-        getViewAllBtn(commentariesElementList).onclick = function () {
-            renderCommentOverlay(commentariesElementList, workout);
-        };
-    }
-    else {
-        commentariesElementList.querySelector('#exercises_more').textContent = `View all ${commentariesLength} comments`;
-    }
-}
-export function clearInput(input){
-    input.value = '';
-}
-export function disablePost(postButton, postStyle){
-    postButton.onclick = false;
-    postStyle.cursor = "";
-    postStyle.color = "gray";
-}
-export function addCommentary(commentariesList, comment_template){
-    commentariesList.appendChild(comment_template);
-}
-export function checkOverflow(workout, commentariesList){
-    if(workout.commentaries.length > 7) {commentariesList.style.overflowY = "scroll"}
-}
-export function updateCommentIcon(commentariesLength, home_list){
-    home_list.parentElement.querySelector('#comments_count').textContent = `${commentariesLength}`;
-}
-export function searchLogByWorkout(workout){
-    let workout_List = document.getElementsByClassName('workout_log');
-    for(let n = 0; n < workout_List.length; n++){
-        if (parseInt(workout_List[n].id) === workout.id){
-            return workout_List[n];
-        }
-    }
-}
-export function getCommentIconByList(commentariesList){
-    return commentariesList.parentElement.getElementsByClassName("emote")[1];
-}
-export function getViewAllBtn(node){
-    return node.querySelector('.link');
-}
-export function updateHomeComments(home_list, comment_template, commentariesLength, workout){
-    if(home_list.childElementCount < 2){
-        addCommentary(home_list, comment_template);
-    }
-    else{
-        renderViewAllButton(home_list, commentariesLength, workout);
-    }
-}
-export async function postLike(workout, like){
-    /*let response = await fetch(`${url}workout/like`, {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                id: `${workout.id}`,
-                action:`${like}`
-            })
-        })desativado para mock*/
-    if (1===1) return true;
-    return false;
-}
-export function updateLike(log, workout, overlay) {
-    updateLikeData(workout);
-    updateLikeElements(log, workout, overlay);
-}
-export function setLikeCount(log, likes_count){
-    log.querySelector('#like').textContent = likes_count;
-
-}
-export function checkLike(log, workout, overlay){
-    log.querySelector("#reactions").firstElementChild.addEventListener("click", async () => {
-        if (await postLike(log, workout)) updateLike(log, workout, overlay);
-        else console.log("Erro");
-    });
-}
-export function changeLikeColor(log, liked){
-    let like_button = log.querySelector("#like").parentElement;
-    liked ? like_button.classList.add("liked") :
-        like_button.classList.remove("liked");
-}
-export function updateLikeData(workout){
-    if (workout.liked){
-        workout.like -= 1;
-        workout.liked = 0;
-    }
-    else {
-        workout.like += 1;
-        workout.liked = 1;
-    }
-}
-export function updateLikeElements(log, workout, overlay){
-    const logs = overlay ? [log, searchLogByWorkout(workout)] : [log];
-    logs.forEach(l => renderLike(l, workout));
-}
-export function renderLike(l, workout){
-    setLikeCount(l, workout.like);
-    changeLikeColor(l, workout.liked);
-}
 document.getElementById("exit").addEventListener("click", () => {
     cookies.remove('jwt_authorization', {path: '/'});
-    window.location = "http://localhost:63342/MeuPrimeiroFront/login/login.html";
+    window.location = "http://localhost:63342/WorkoutHeavyFront/login/login.html";
 });
-
-Element.prototype.prependChild = function(newElement) {
-    return this.insertBefore(newElement, this.firstChild);
-};

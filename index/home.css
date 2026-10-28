@@ -34,7 +34,7 @@
     width: 690px;
     background-color: #161618;
 }
-.profile_box{
+.profile{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -163,7 +163,7 @@
     z-index: 1000;
     opacity: 20%
 }
-.session{
+.exercise{
     align-items: center;
     display: flex;
     gap: 5px;
@@ -193,6 +193,8 @@
 }
 .exercise_img{
     width: 50px;
+    height: 50px;
+    object-fit: cover;
     border-radius: 50px;
 }
 #reactions{

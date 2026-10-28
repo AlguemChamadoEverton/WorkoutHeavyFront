@@ -8,7 +8,7 @@ const cookies = new Cookies();
 window.addEventListener("pageshow", (event) => {
 
         if(cookies.get("jwt_authorization")){
-            window.location.replace("http://localhost:63342/MeuPrimeiroFront/index/home.html")
+            window.location.replace("http://localhost:63342/WorkoutHeavyFront/index/home.html")
         }
 });
 export default async function loginFetch() {
@@ -30,7 +30,7 @@ export default async function loginFetch() {
             const data = await response.json();
             const key = data.toString();
             cookies.set("jwt_authorization", key, { path: '/' });
-            window.location = "http://localhost:63342/MeuPrimeiroFront/index/home.html";
+            window.location = "http://localhost:63342/WorkoutHeavyFront/index/home.html";
         } else if(response.status === 400){
             incorrect.removeAttribute("hidden");
         }

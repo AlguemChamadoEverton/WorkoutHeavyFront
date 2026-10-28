@@ -25,7 +25,7 @@ export default async function registerFetch() {
             })
         })
         if (response.ok) {
-            window.location = "/MeuPrimeiroFront/login/login.html";
+            window.location = "/WorkoutHeavyFront/login/login.html";
         } else if(response.status === 400){
             console.log(await response.json());
         }

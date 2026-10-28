@@ -46,18 +46,18 @@ export async function searchUsers(event) {
         [
             {
                 "id": 1,
-                "username": "Xestro",
-                "profile_pic": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg"
+                "username": "marina.lifts",
+                "profile_pic": "../shared/guest.svg"
             },
             {
                 "id": 3,
-                "username": "Beti",
-                "profile_pic": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg"
+                "username": "bia.gym",
+                "profile_pic": "../shared/guest.svg"
             },
             {
                 "id": 2,
-                "username": "Faaa",
-                "profile_pic": "https://i.pinimg.com/736x/b4/0c/c5/b40cc599980b8b0a944d304e205c6fa0.jpg"
+                "username": "caio_strength",
+                "profile_pic": "../shared/guest.svg"
             }
         ]
     }`
