@@ -26,7 +26,7 @@ export function initMenu(){
 export async function searchUsers(event) {
     let input = event.currentTarget;
     let resultBox = document.getElementById("search_result");
-    let nameSearched = input.value.toString()
+    let nameSearched = input.value.toString();
     resultBox.style.visibility = "visible";
     //Lança a query pro backend, para cada resultado do meu json criar um elemento div, se não tiver nenhum, retorna cant find
     /*const response = await fetch(`${url}users`, {
