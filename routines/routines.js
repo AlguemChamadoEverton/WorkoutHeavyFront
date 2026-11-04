@@ -70,6 +70,21 @@ response = `
                     "id": 3,
                     "name": "Full Body C",
                     "exercises": ["Bench Press (Barbell)", "Bulgarian Split Squat (Dumbbell)", "Standing Calf Raise (Smith)", "Lateral Raise (Dumbbell)"]
+                },
+                {
+                    "id": 3,
+                    "name": "Full Body C",
+                    "exercises": ["Bench Press (Barbell)", "Bulgarian Split Squat (Dumbbell)", "Standing Calf Raise (Smith)", "Lateral Raise (Dumbbell)"]
+                },
+                {
+                    "id": 3,
+                    "name": "Full Body C",
+                    "exercises": ["Bench Press (Barbell)", "Bulgarian Split Squat (Dumbbell)", "Standing Calf Raise (Smith)", "Lateral Raise (Dumbbell)"]
+                },
+                {
+                    "id": 3,
+                    "name": "Full Body C",
+                    "exercises": ["Bench Press (Barbell)", "Bulgarian Split Squat (Dumbbell)", "Standing Calf Raise (Smith)", "Lateral Raise (Dumbbell)"]
                 }
             ]
         }
@@ -85,7 +100,6 @@ if(1 === 1){ //response.ok desativado para mock
 function renderFolders(folders){
     let column = document.querySelector(".routines_column");
     folders.forEach((folder, index) => {
-        //linha separando uma pasta da outra, não vai antes da primeira
         if (index > 0) {
             column.appendChild(document.getElementById("break_line").content.cloneNode(true));
         }
@@ -110,15 +124,84 @@ function renderRoutine(routine){
     return routine_template;
 }
 
-//delegação no container: funciona também para as pastas que vêm do template
 document.querySelector(".routines_column").addEventListener("click", (event) => {
     let arrow = event.target.closest(".folder_arrow");
+    let folder_name = event.target.closest(".folder_name");
     if (arrow) {
         toggleFolder(arrow.closest(".folder"));
     }
+    if(folder_name){
+        toggleFolder(folder_name.closest(".folder"));
+    }
 });
-
+document.querySelector('.new_routine').addEventListener("click", () => null);
+document.querySelector('.new_folder').addEventListener("click", async () => {
+    await createFolder();
+});
 //oculta/exibe as rotinas da pasta; a classe "closed" também gira a arrow para a direita
 function toggleFolder(folder) {
     folder.classList.toggle("closed");
+}
+async function createFolder(){
+    const folder = document.getElementById("folder_modal");
+    renderFolderCreation(folder);
+    folder.querySelector(".create_button").onclick = async (event) => {
+        let create_button = event.currentTarget;
+        if (!create_button.disabled) {
+            let response = await postFolder(create_button, folder);
+            let folder_template = renderFolder(response);
+            folder_template.appendChild(document.getElementById("break_line").content.cloneNode(true));
+            addFolderToList(folder_template);
+            hideModal(folder, folder.querySelector(".modal_overlay"));
+        }
+    }
+}
+
+function renderFolderCreation(folder){
+    folder.style.display = "";
+    folder.querySelector(".modal_input").oninput = (event) => {
+        folder.querySelector(".create_button").disabled = event.currentTarget.value.length === 0;
+    }
+    folder.querySelector(".modal_overlay").onclick = (event) => {
+        hideModal(folder, event.target);
+    }
+}
+
+function addFolderToList(folder){
+    document.querySelector(".routines_column .title").after(folder);
+    document.querySelector(".create_button").disabled = true;
+}
+
+async function postFolder(create_button, folder){
+    let input = folder.querySelector(".modal_input");
+    /*const response = await fetch(`${url}folder`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            "Folder": input.value.toString(),
+        })
+    })
+    let data = await response.json();
+    if(response.ok){*/
+    // faz o fetch para o backend
+    //mock vvvvv
+    response = `
+        {
+            "id": 21,
+            "name": "${input.value.toString()}",
+            "routines": []
+        }`
+    input.value = '';
+    return JSON.parse(response);
+}
+function hideModal(folder, modal_overlay){
+    if(modal_overlay.closest(".modal") &&
+        !modal_overlay.closest(".cancel_button") &&
+        !modal_overlay.closest(".modal_close")) return;
+    folder.querySelector(".create_button").disabled = true;
+    folder.querySelector(".modal_input").value = "";
+    folder.style.display = "none";
 }

@@ -17,6 +17,7 @@
     flex-direction: column;
     gap: 15px;
     width: 640px;
+    padding-bottom: 50px;
 }
 .break_line{
     height: 1px;
@@ -49,6 +50,8 @@
 .folder_name{
     color: #83898F;
     font-size: 15px;
+    user-select: none;
+    -webkit-user-select: none;
 }
 .options{
     margin-left: auto;
@@ -101,6 +104,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    cursor: pointer;
 }
 .panel_icon{
     display: flex;
@@ -117,4 +121,80 @@
 }
 .panel_arrow{
     margin-left: auto;
+}
+/* fundo escurecido: mesma cor e opacidade do print do Hevy */
+.modal_overlay{
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(17,17,20,0.3);
+    z-index: 1000;
+}
+.modal{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-sizing: border-box;
+    width: 496px;
+    padding: 27px;
+    border: 1px solid #28282A;
+    border-radius: 10px;
+    background-color: #161618;
+}
+.modal_header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 24px;
+}
+.modal_title{
+    color: white;
+    font-size: 16px;
+}
+.modal_close{
+    cursor: pointer;
+}
+.modal_input{
+    box-sizing: border-box;
+    height: 44px;
+    padding: 0 19px;
+    border: 1px solid #28282A;
+    border-radius: 8px;
+    outline: none;
+    background-color: transparent;
+    color: white;
+    font-family: inherit;
+    font-size: 15px;
+}
+.modal_input::placeholder{
+    color: #83898F;
+}
+.modal_buttons{
+    display: flex;
+    justify-content: flex-end;
+    gap: 19px;
+}
+.modal_button{
+    height: 40px;
+    padding: 0 17px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.cancel_button{
+    background-color: rgb(44,44,46,1);
+}
+.create_button{
+    background-color: rgb(0, 140, 255);
+    cursor: pointer;
+}
+.create_button:disabled{
+    background-color: #83898F;
+    cursor: default;
 }
