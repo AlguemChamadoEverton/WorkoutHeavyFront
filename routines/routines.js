@@ -94,6 +94,7 @@ response = `
 if(1 === 1){ //response.ok desativado para mock
     //let routines = await response.json(); desativado para mock
     let routines = JSON.parse(response);
+    addMockCreatedRoutines(routines.folders); //só mock: o GET /routines real já traz as rotinas novas
     renderFolders(routines.folders);
 }
 
@@ -134,7 +135,6 @@ document.querySelector(".routines_column").addEventListener("click", (event) => 
         toggleFolder(folder_name.closest(".folder"));
     }
 });
-document.querySelector('.new_routine').addEventListener("click", () => null);
 document.querySelector('.new_folder').addEventListener("click", async () => {
     await createFolder();
 });
@@ -188,12 +188,11 @@ async function postFolder(create_button, folder){
     if(response.ok){*/
     // faz o fetch para o backend
     //mock vvvvv
-    response = `
-        {
-            "id": 21,
-            "name": "${input.value.toString()}",
-            "routines": []
-        }`
+    response = JSON.stringify({
+        "id": 21,
+        "name": input.value.toString(),
+        "routines": []
+    });
     input.value = '';
     return JSON.parse(response);
 }
@@ -204,4 +203,10 @@ function hideModal(folder, modal_overlay){
     folder.querySelector(".create_button").disabled = true;
     folder.querySelector(".modal_input").value = "";
     folder.style.display = "none";
+}
+//mock: rotinas criadas no create-routine ficam no sessionStorage e entram na pasta My Routines
+function addMockCreatedRoutines(folders){
+    let created = JSON.parse(sessionStorage.getItem("mock_created_routines") ?? "[]");
+    let myRoutines = folders.find(folder => folder.name === "My Routines");
+    if(myRoutines) myRoutines.routines.push(...created);
 }

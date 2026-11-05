@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Heavy - Create Routine</title>
+    <link rel="stylesheet" href="create-routine.css">
+    <link rel="stylesheet" href="/shared/shared.css">
+</head>
+<!-- data-nav: diz ao menu qual botão marcar como ativo, já que essa página não está no menu -->
+<body data-nav="routines">
+<script src="../shared/menu_html.js"></script>
+    <template id="library_item">
+        <div class="library_item">
+            <svg class="add_exercise" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="rgb(0,140,255)"></circle><path d="M12 7V17M7 12H17" stroke="white" stroke-width="1.8" stroke-linecap="round"></path></svg>
+            <img class="exercise_img" src="exercise_placeholder.svg" alt="">
+            <div class="library_info">
+                <span class="library_name">21s Bicep Curl</span>
+                <div class="library_details">
+                    <span class="library_muscle">Biceps</span>
+                    <span class="custom_badge" style="display: none">Custom</span>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="routine_exercise">
+        <div class="routine_exercise">
+            <div class="exercise_header">
+                <img class="exercise_img" src="exercise_placeholder.svg" alt="">
+                <span class="exercise_name">Bench Press (Barbell)</span>
+                <svg class="remove_exercise" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#83898F" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 2.5L13.5 13.5M13.5 2.5L2.5 13.5"></path></svg>
+            </div>
+            <div class="sets_header">
+                <span>SET</span>
+                <span>KG</span>
+                <span>REPS</span>
+                <span></span>
+            </div>
+            <div class="sets"></div>
+            <button class="add_set">+ Add Set</button>
+        </div>
+    </template>
+    <template id="muscle_chip">
+        <span class="muscle_chip">
+            <span class="chip_name">Triceps</span>
+            <svg class="remove_chip" width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M2.5 2.5L13.5 13.5M13.5 2.5L2.5 13.5"></path></svg>
+        </span>
+    </template>
+    <template id="set_row">
+        <div class="set_row">
+            <span class="set_number">1</span>
+            <input class="set_input" data-field="kg" type="number" min="0" placeholder="-">
+            <input class="set_input" data-field="reps" type="number" min="0" placeholder="-">
+            <svg class="remove_set" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#83898F" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 2.5L13.5 13.5M13.5 2.5L2.5 13.5"></path></svg>
+        </div>
+    </template>
+    <div id="custom_modal" style="display: none">
+        <div class="modal_overlay">
+            <div class="modal">
+                <div class="modal_header">
+                    <b class="modal_title">Create Custom Exercise</b>
+                    <svg class="modal_close" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 2.5L13.5 13.5M13.5 2.5L2.5 13.5"></path></svg>
+                </div>
+                <div class="modal_body">
+                    <div class="custom_image">
+                        <div class="image_preview">
+                            <svg class="image_icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#83898F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4H6C4.9 4 4 4.9 4 6V18C4 19.1 4.9 20 6 20H18C19.1 20 20 19.1 20 18V11"></path><path d="M4 16L8.5 11.5C9.3 10.7 10.5 10.7 11.3 11.5L16 16"></path><path d="M14 14L15.5 12.5C16.3 11.7 17.5 11.7 18.3 12.5L20 14.2"></path><path d="M18 3V9M15 6H21"></path><circle cx="9" cy="8" r="1"></circle></svg>
+                            <img class="image_selected" alt="" style="display: none">
+                        </div>
+                        <button class="add_image">Add Image</button>
+                        <input class="image_input" type="file" accept="image/*" hidden>
+                    </div>
+                    <label class="modal_label" for="custom_name">Exercise Name</label>
+                    <input class="modal_input" id="custom_name" type="text" placeholder="Enter exercise name...">
+                    <label class="modal_label" for="custom_type">Exercise Type</label>
+                    <select class="library_select" id="custom_type" required>
+                        <option value="">Select...</option>
+                        <option value="weight_reps">Weight &amp; Reps</option>
+                        <option value="bodyweight_reps">Bodyweight Reps</option>
+                        <option value="weighted_bodyweight">Weighted Bodyweight</option>
+                        <option value="assisted_bodyweight">Assisted Bodyweight</option>
+                        <option value="duration">Duration</option>
+                        <option value="distance_duration">Distance &amp; Duration</option>
+                        <option value="weight_distance">Weight &amp; Distance</option>
+                    </select>
+                    <label class="modal_label" for="custom_equipment">Equipment</label>
+                    <select class="library_select" id="custom_equipment" required>
+                        <option value="">Select...</option>
+                    </select>
+                    <label class="modal_label" for="custom_muscle">Primary Muscle Group</label>
+                    <select class="library_select" id="custom_muscle" required>
+                        <option value="">Select...</option>
+                    </select>
+                    <label class="modal_label" for="custom_other_muscles">Other Muscles</label>
+                    <select class="library_select" id="custom_other_muscles" required>
+                        <option value="">Select...</option>
+                    </select>
+                    <div class="other_muscles"></div>
+                </div>
+                <div class="modal_footer">
+                    <button class="modal_button create_button" disabled>Create Exercise</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page_main">
+        <div class="create_page">
+            <div class="routine_column">
+                <div class="routine_top">
+                    <svg class="back_button" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6L4 12L10 18"></path></svg>
+                    <b class="title">Create Routine</b>
+                    <button class="save_button" disabled>Save Routine</button>
+                </div>
+                <label class="routine_label" for="routine_title">Routine Title</label>
+                <input class="routine_title" id="routine_title" type="text" placeholder="Workout Routine Title">
+                <div class="no_exercises" id="no_exercises">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"><rect x="6" y="15" width="7" height="18" rx="2"></rect><rect x="35" y="15" width="7" height="18" rx="2"></rect><rect x="2" y="19" width="4" height="10" rx="1.5"></rect><rect x="42" y="19" width="4" height="10" rx="1.5"></rect><path d="M13 24H35"></path></svg>
+                    <b class="no_exercises_title">No Exercises</b>
+                    <span class="no_exercises_text">So far, you haven't added any exercises to this routine.</span>
+                </div>
+                <div class="routine_exercises"></div>
+            </div>
+            <div class="side_column">
+                <div class="summary">
+                    <b class="side_title">Summary</b>
+                    <div class="summary_stats">
+                        <div class="summary_stat">
+                            <span class="summary_label">Exercises</span>
+                            <span class="summary_value" id="summary_exercises">0</span>
+                        </div>
+                        <div class="summary_stat">
+                            <span class="summary_label">Total Sets</span>
+                            <span class="summary_value" id="summary_sets">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="library">
+                    <div class="library_top">
+                        <div class="library_header">
+                            <b class="side_title">Library</b>
+                            <a class="custom_exercise">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgb(0,140,255)" stroke-width="1.5" stroke-linecap="round"><path d="M8 2V14M2 8H14"></path></svg>
+                                Custom Exercise
+                            </a>
+                        </div>
+                        <select class="library_select" id="filter_equipment">
+                            <option value="">All Equipment</option>
+                        </select>
+                        <select class="library_select" id="filter_muscle">
+                            <option value="">All Muscles</option>
+                        </select>
+                        <div class="library_search">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#83898F" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M16 16L21 21"></path></svg>
+                            <input class="search_exercises" id="search_exercises" type="search" placeholder="Search Exercises">
+                        </div>
+                    </div>
+                    <div class="library_list">
+                        <span class="library_list_title">All Exercises</span>
+                        <div class="library_items"></div>
+                        <span class="library_empty" style="display: none">No exercises found</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="module" src="create-routine.js"></script>
+</body>
+</html>

@@ -95,7 +95,7 @@ const menuHtml = `
                 <a href="../index/home.html" class="nav_button">
                     <svg class="nav_icons" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" tint="#21272f" type="home" dark="#21272f" light="#21272f" style="width: 24px; height: 24px;"><path d="M3 11V20C3 21.1046 3.89543 22 5 22H10V18M21 11V20C21 21.1046 20.1046 22 19 22H14V17.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path><path d="M14 19L14 16C14 15.4477 13.5523 15 13 15L11 15C10.4477 15 10 15.4477 10 16L10 19" stroke="currentColor" stroke-width="1.5"></path><path d="M1 13L11.2929 2.70711C11.6834 2.31658 12.3166 2.31658 12.7071 2.70711L23 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
                     <p class="nav_text">Feed</p></a>
-                <a href="../routines/routines.html" class="nav_button"><svg class="nav_icons" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" tint=" #FFFFFF" type="routine" dark=" #FFFFFF" light=" #FFFFFF" style="width: 24px; height: 24px;"><path d="M7.998 4h-1a3 3 0 00-3 3v11a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3h-1" stroke=" #FFFFFF" stroke-width="1.5"></path><path d="M16.002 15h-8m8-4h-8" stroke=" #FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><rect x="8.002" y="2" width="8" height="4" rx="0.5" stroke=" #FFFFFF" stroke-width="1.5"></rect></svg><p class="nav_text">Routines</p></a>
+                <a href="../routines/routines.html" class="nav_button" data-nav="routines"><svg class="nav_icons" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" tint=" #FFFFFF" type="routine" dark=" #FFFFFF" light=" #FFFFFF" style="width: 24px; height: 24px;"><path d="M7.998 4h-1a3 3 0 00-3 3v11a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3h-1" stroke=" #FFFFFF" stroke-width="1.5"></path><path d="M16.002 15h-8m8-4h-8" stroke=" #FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><rect x="8.002" y="2" width="8" height="4" rx="0.5" stroke=" #FFFFFF" stroke-width="1.5"></rect></svg><p class="nav_text">Routines</p></a>
                 <a href="../exercises/exercises.html" class="nav_button">
                     <svg class="nav_icons" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m19.4 9.375l-.688-.688l.904-.948l-3.354-3.354l-.948.904l-.714-.714l1.612-1.661l4.85 4.85zM2.989 16.212L4.6 14.6l.714.714l-.91.903l3.379 3.38l.903-.91l.714.713l-1.611 1.612zm15.163-2.635l2.002-2.002l-7.729-7.729l-2.002 2.002zm-6.577 6.577l2.021-2.027l-7.723-7.723l-2.027 2.021zm-.265-5.715l3.134-3.13l-1.753-1.753l-3.13 3.135zm3.713 3.707l-3.448 3.41l-9.13-9.131l3.409-3.448l2.994 3l3.135-3.135l-2.981-2.994l3.442-3.442l9.15 9.15l-3.442 3.442l-2.994-2.98l-3.135 3.134z"/></svg>
                     <p class="nav_text">Exercises</p></a>
@@ -117,9 +117,11 @@ const menuHtml = `
 
 document.currentScript.insertAdjacentHTML("afterend", menuHtml);
 
-//páginas fora do menu, como a de workout, não marcam nenhum botão
+//páginas fora do menu, como a de workout, não marcam nenhum botão;
+//subpáginas (ex.: create-routine) marcam a seção pelo data-nav do <body>
 document.querySelectorAll(".nav_button").forEach(button => {
-    if(button.pathname === window.location.pathname){
+    if(button.pathname === window.location.pathname ||
+        (button.dataset.nav && button.dataset.nav === document.body.dataset.nav)){
         button.classList.add("active");
     }
 });
