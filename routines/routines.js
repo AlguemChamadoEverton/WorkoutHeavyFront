@@ -57,32 +57,32 @@ response = `
             "routines":
             [
                 {
-                    "id": 1,
+                    "id": 4,
                     "name": "Full Body A",
                     "exercises": ["Squat (Barbell)", "Pull Up (Weighted)", "Chest Dip (Weighted)", "Overhead Press (Barbell)", "Romanian Deadlift (Barbell)"]
                 },
                 {
-                    "id": 2,
+                    "id": 5,
                     "name": "Full Body B",
                     "exercises": ["Deadlift (Barbell)", "Incline Bench Press (Barbell)", "Chest Supported Incline Row (Dumbbell)", "Leg Press"]
                 },
                 {
-                    "id": 3,
+                    "id": 6,
                     "name": "Full Body C",
                     "exercises": ["Bench Press (Barbell)", "Bulgarian Split Squat (Dumbbell)", "Standing Calf Raise (Smith)", "Lateral Raise (Dumbbell)"]
                 },
                 {
-                    "id": 3,
+                    "id": 7,
                     "name": "Full Body C",
                     "exercises": ["Bench Press (Barbell)", "Bulgarian Split Squat (Dumbbell)", "Standing Calf Raise (Smith)", "Lateral Raise (Dumbbell)"]
                 },
                 {
-                    "id": 3,
+                    "id": 8,
                     "name": "Full Body C",
                     "exercises": ["Bench Press (Barbell)", "Bulgarian Split Squat (Dumbbell)", "Standing Calf Raise (Smith)", "Lateral Raise (Dumbbell)"]
                 },
                 {
-                    "id": 3,
+                    "id": 9,
                     "name": "Full Body C",
                     "exercises": ["Bench Press (Barbell)", "Bulgarian Split Squat (Dumbbell)", "Standing Calf Raise (Smith)", "Lateral Raise (Dumbbell)"]
                 }
@@ -209,4 +209,104 @@ function addMockCreatedRoutines(folders){
     let created = JSON.parse(sessionStorage.getItem("mock_created_routines") ?? "[]");
     let myRoutines = folders.find(folder => folder.name === "My Routines");
     if(myRoutines) myRoutines.routines.push(...created);
+}
+
+// ---------- mover rotina entre pastas (drag and drop) ----------
+//delegação na coluna: funciona também nas pastas criadas depois pelo modal
+const routinesColumn = document.querySelector(".routines_column");
+let dragged = null; //rotina sendo arrastada: { element, fromFolder, fromIndex, originNext, dropped }
+
+routinesColumn.addEventListener("dragstart", (event) => {
+    let routine = event.target.closest(".routine");
+    if(!routine) return;
+    dragged = {
+        element: routine,
+        fromFolder: routine.closest(".folder"),
+        fromIndex: [...routine.parentElement.children].indexOf(routine),
+        originNext: routine.nextElementSibling, //para voltar ao lugar se soltar fora
+        dropped: false
+    };
+    event.dataTransfer.effectAllowed = "move";
+    //no próximo frame: o navegador tira a "foto" da rotina antes de ela ficar apagada
+    requestAnimationFrame(() => routine.classList.add("dragging"));
+});
+
+//enquanto arrasta, a rotina já vai sendo encaixada onde vai cair
+routinesColumn.addEventListener("dragover", (event) => {
+    let folder = event.target.closest(".folder");
+    if(!dragged || !folder) return;
+    event.preventDefault(); //sem isso o navegador não deixa soltar aqui
+    highlightFolder(folder);
+    let list = folder.querySelector(".folder_routines");
+    let after = getRoutineAfter(list, event.clientY) ?? null;
+    if(dragged.element.parentElement !== list || dragged.element.nextElementSibling !== after){
+        list.insertBefore(dragged.element, after); //after null = vai para o fim
+    }
+});
+
+routinesColumn.addEventListener("drop", async (event) => {
+    let folder = event.target.closest(".folder");
+    if(!dragged || !folder) return;
+    event.preventDefault();
+    let move = dragged; //guardo a referência: o dragend zera o dragged antes do await terminar
+    move.dropped = true;
+    let toIndex = [...folder.querySelector(".folder_routines").children].indexOf(move.element);
+    if(folder === move.fromFolder && toIndex === move.fromIndex) return; //soltou onde já estava
+    updateFolderCount(move.fromFolder);
+    updateFolderCount(folder);
+    if(!await patchRoutineFolder(move.element.id, folder.id, toIndex)){
+        returnToOrigin(move);
+    }
+});
+
+//dispara sempre no fim, tendo soltado numa pasta ou não
+routinesColumn.addEventListener("dragend", () => {
+    if(!dragged) return;
+    if(!dragged.dropped) returnToOrigin(dragged); //soltou fora de uma pasta ou apertou Esc
+    dragged.element.classList.remove("dragging");
+    highlightFolder(null);
+    dragged = null;
+});
+
+//devolve a rotina que vai ficar logo DEPOIS da arrastada, de acordo com a altura do mouse (y).
+//null = a arrastada vai para o fim da pasta
+function getRoutineAfter(list, y){
+    // TODO(human)
+}
+
+function returnToOrigin(move){
+    let currentFolder = move.element.closest(".folder");
+    move.fromFolder.querySelector(".folder_routines").insertBefore(move.element, move.originNext);
+    updateFolderCount(currentFolder);
+    updateFolderCount(move.fromFolder);
+}
+
+function highlightFolder(folder){
+    routinesColumn.querySelectorAll(".folder.drag_over").forEach(other => {
+        if(other !== folder) other.classList.remove("drag_over");
+    });
+    folder?.classList.add("drag_over");
+}
+
+//o nome da pasta termina com "(quantidade)"; troca só o número
+function updateFolderCount(folder){
+    let name = folder.querySelector(".folder_name");
+    let count = folder.querySelectorAll(".routine").length;
+    name.textContent = name.textContent.replace(/\(\d+\)$/, `(${count})`);
+}
+
+async function patchRoutineFolder(routineId, folderId, position){
+    /*const response = await fetch(`${url}routines/${routineId}/folder`, {
+        method: "PATCH",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            "FolderId": Number(folderId),
+            "Position": position
+        })
+    });
+    return response.ok; codigo oficial*/
+    return true; //mock: troque para false para ver a rotina voltar para a pasta de origem
 }

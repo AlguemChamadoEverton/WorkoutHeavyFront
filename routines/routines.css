@@ -71,6 +71,14 @@
     background-color: #161618;
     cursor: pointer;
 }
+/* rotina sendo arrastada: fica apagada na posição em que vai cair */
+.routine.dragging{
+    opacity: 0.4;
+}
+/* pasta que vai receber a rotina */
+.folder.drag_over .folder_name{
+    color: white;
+}
 .routine_header{
     display: flex;
     align-items: center;
